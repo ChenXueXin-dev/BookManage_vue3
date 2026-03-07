@@ -1,0 +1,88 @@
+/* 只需要重写你需要的即可 */
+@forward 'element-plus/theme-chalk/src/common/var.scss' with (
+  $colors: (
+
+  'primary': (
+
+    'base': #2B5BA1,
+
+  ),
+
+  'success': (
+
+    'base': #2E7D32,
+
+  ),
+
+  'warning': (
+
+    'base': #E6A23C,
+
+  ),
+
+  'danger': (
+
+    'base': #F56C6C,
+
+  ),
+
+  'info': (
+
+    'base': #909399,
+
+  )
+
+),
+
+  $common-component-size: (
+    'large': 40px,
+    'default': 32px,
+    'small': 24px,
+  ),
+  $border-radius: (
+    'base': 0,
+    'small': 0,
+    'round': 0,
+    'circle': 0,
+  ),
+
+  // 添加卡片组件的自定义样式
+  $card: (
+    'border-color': transparent,
+    'border-radius': 0,
+    'padding': 20px,
+    'shadow': none
+  ),
+  $tag:(
+    'border-radius':0
+  ),
+
+  // 添加 switch 组件的自定义样式
+  $switch: (
+    'core-border-radius': 10px,  // switch 外框的圆角
+    'button-border-radius': 10px  // switch 按钮的圆角
+  ),
+
+  // 添加对话框组件的自定义样式
+  $dialog: (
+    'border-radius': 8px,
+    'padding-primary': 24px,
+    'margin-top': 15vh
+  ),
+
+  // 添加表单相关组件的自定义样式
+  $input: (
+    'border-radius': 4px,
+    'hover-border-color': #2B5BA1,
+    'focus-border-color': #2B5BA1
+  ),
+  $form: (
+    'label-font-size': 14px,
+    'error-font-size': 12px
+  )
+);
+
+// 如果只是按需导入，则可以忽略以下内容。
+// 如果你想导入所有样式:
+@use "element-plus/theme-chalk/src/index.scss" as *;
+
