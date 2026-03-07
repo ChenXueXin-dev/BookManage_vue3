@@ -12,7 +12,7 @@
           </router-link>
         </div>
         <nav class="main-nav">
-          <router-link to="/" class="nav-item">
+          <router-link to="/" exact class="nav-item">
             <el-icon class="nav-icon">
               <HomeFilled />
             </el-icon>
@@ -26,12 +26,11 @@
             </el-icon>
             <span>图书浏览</span>
           </router-link>
-          <router-link to="/about" class="nav-item">
+          <router-link to="/ranking" class="nav-item">
             <el-icon class="nav-icon">
-              <UserFilled />
+              <StarFilled />
             </el-icon>
-            <span>关于我们</span>
-
+            <span>热门榜单</span>
           </router-link>
         </nav>
         <div class="user-actions">
@@ -41,9 +40,11 @@
               class="notification-badge">
               <el-popover placement="bottom" :width="320" trigger="click" @show="loadAllNotifications">
                 <template #reference>
-                  <el-button class="notification-btn" :type="allNotifications.length > 0 ? 'danger' : 'info'" circle>
+                  <el-button class="notification-btn" :type="allNotifications.length > 0 ? 'danger' : 'primary'" circle>
                     <el-icon>
-                      <Bell />
+                      <el-icon>
+                        <BellFilled />
+                      </el-icon>
                     </el-icon>
                   </el-button>
                 </template>
@@ -105,21 +106,24 @@
 
             <el-dropdown trigger="click" @command="handleCommand">
               <span class="user-dropdown">
-                <el-avatar :size="36" :src="userInfo?.avatar ? ('/api' + userInfo.avatar) : ''" class="user-avatar">
+                <el-avatar :size="36" :src="userInfo?.avatar ? ('/api' + userInfo.avatar) : ''" class="user-avatar"
+                  shape="circle">
                   {{ getAvatarText() }}
                 </el-avatar>
-                <span class="username">{{ userInfo?.name || userInfo?.username }}</span>
-                <el-icon>
-                  <ArrowDown />
-                </el-icon>
+
               </span>
               <template #dropdown>
+                <div class="drop-top" @click="handleCommand('profile')">
+                  <div class="top-item">
+                    <el-avatar :size="36" :src="userInfo?.avatar ? ('/api' + userInfo.avatar) : ''" class="user-avatar"
+                      shape="circle">
+                    </el-avatar>
+                  </div>
+                  <div class="top-item">
+                    <span class="username">{{ userInfo?.name || userInfo?.username }}</span>
+                  </div>
+                </div>
                 <el-dropdown-menu>
-                  <el-dropdown-item command="profile">
-                    <el-icon>
-                      <User />
-                    </el-icon>个人信息
-                  </el-dropdown-item>
                   <el-dropdown-item command="borrow">
                     <el-icon>
                       <Notebook />
@@ -170,15 +174,33 @@
     <el-footer class="footer" height="auto">
       <div class="footer-container">
         <div class="footer-content">
-          <div class="footer-logo">
-            <el-icon class="logo-icon">
-              <Reading />
-            </el-icon>
-            <span class="logo-text">图书室借阅管理系统</span>
+          <div class="footer-item">
+            <div class="foot-title">
+              联系我们
+            </div>
+            <div>
+              <div>详细地址: 广东省茂名市茂南区官渡街道官渡二路139号</div>
+              <div>邮政编码: 525000</div>
+              <div>咨询电话: 0668-1234567</div>
+              <div>咨询建议: gy@edu.com</div>
+            </div>
           </div>
-        </div>
-        <div class="copyright">
-          <p>&copy; 2025 图书室借阅管理系统 版权所有</p>
+          <div class="footer-item">
+            <div class="foot-title">
+              关注我们</div>
+            <div>
+              <div class="foot-Code">
+                <div class="code-item">
+                  <img class="footer-img" src="@/assets/images/wechatCode.png" alt="官方微信平台">
+                  <span>官方微信平台</span>
+                </div>
+                <div class="code-item">
+                  <img class="footer-img" src="@/assets/images/weiboCode.png" alt="官方微博">
+                  <span>官方微博</span>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </el-footer>
@@ -190,18 +212,16 @@ import { computed, onMounted } from 'vue'
 import { useUserStore } from '@/store/user'
 import { useRouter } from 'vue-router'
 import {
-  ArrowDown,
   Reading,
   HomeFilled,
   Menu,
-  UserFilled,
-  User,
+  StarFilled,
   Notebook,
   Star,
   ChatDotRound,
   SwitchButton,
   Setting,
-  Bell
+  BellFilled
 } from '@element-plus/icons-vue'
 
 const userStore = useUserStore()
@@ -275,9 +295,9 @@ onMounted(() => {
 </script>
 
 <style lang="scss" scoped>
-// 定义主题变量
 $primary-color: #409EFF;
 $primary-gradient: linear-gradient(135deg, #409EFF, #57ffb9);
+$nav-gradient: linear-gradient(135deg, #f2fffa, #409EFF, #f2fffa);
 $background-gradient: linear-gradient(135deg, #f0f7ff 0%, #e6f1ff 100%);
 $glass-effect: rgba(255, 255, 255, 0.8);
 $shadow-light: 0 4px 12px rgba(0, 0, 0, 0.05);
@@ -329,10 +349,6 @@ $transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     text-decoration: none;
     color: #333;
     transition: $transition;
-
-    &:hover {
-      transform: translateY(-1px);
-    }
   }
 
   .logo-icon {
@@ -386,20 +402,12 @@ $transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       left: 0;
       width: 0;
       height: 2px;
-      background: $primary-gradient;
+      background: $nav-gradient;
       transition: width $transition;
       border-radius: 1px;
     }
 
-    &:hover {
-      color: $primary-color;
-
-      &::after {
-        width: 100%;
-      }
-    }
-
-    &.router-link-active {
+    &.router-link-exact-active {
       color: $primary-color;
 
       &::after {
@@ -415,41 +423,20 @@ $transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   gap: 16px;
 
   .user-dropdown {
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-    transition: $transition;
-    padding: 6px 12px;
-    border-radius: 24px;
-    @include glass-morphism;
-
-    &:hover {
-      transform: translateY(-1px);
-      box-shadow: $shadow-light;
-    }
+    padding: 8px;
+    border-radius: 100%;
 
     .user-avatar {
-      border: 2px solid #fff;
       box-shadow: $shadow-light;
-      background: $primary-gradient;
-      color: #fff;
-      font-weight: 600;
-      transition: $transition;
-
-      &:hover {
-        transform: scale(1.05);
-      }
+      background-color: #fff;
     }
 
-    .username {
-      margin: 0 8px;
-      max-width: 120px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      font-weight: 500;
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: $shadow-light;
     }
   }
+
 
   .login-btn,
   .register-btn {
@@ -469,14 +456,43 @@ $transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 }
 
+.drop-top {
+  display: flex;
+  flex-direction: column;
+  width: 200px;
+  justify-content: center;
+  margin: 10px;
+  border-radius: 20px;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: $shadow-light;
+  }
+
+  .top-item {
+    background-color: #e8f0ff;
+    display: flex;
+    justify-content: center;
+    padding: 5px;
+
+    .user-avatar {
+      border: 2px solid #fff;
+      box-shadow: $shadow-light;
+      background: #fff;
+      color: #fff;
+      font-weight: 600;
+    }
+  }
+}
+
 .main-content {
   padding: 24px;
   min-height: calc(100vh - 70px - 200px);
 }
 
 .footer {
-  background: linear-gradient(180deg, #2c3e50, #1a2634);
-  color: #fff;
+  background: #F8F9FA;
+  color: #6c757d;
   padding: 40px 0 20px;
   margin-top: auto;
 }
@@ -493,20 +509,36 @@ $transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   margin-bottom: 30px;
 }
 
-.footer-logo {
+.footer-item {
+  padding: 0 10px;
+  width: 450px;
+}
+
+.foot-title {
+  font-size: 20px;
+  font-weight: 500;
+  width: 100px;
+  margin-bottom: 12px;
+  color: #6c757d;
+  border-bottom: 2px solid #6c757d;
+}
+
+
+.foot-Code {
   display: flex;
-  align-items: center;
 
-  .logo-icon {
-    font-size: 28px;
-    margin-right: 12px;
-    filter: drop-shadow(0 2px 4px rgba(255, 255, 255, 0.1));
-  }
+  .code-item {
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
 
-  .logo-text {
-    font-size: 22px;
-    font-weight: 600;
-    letter-spacing: 1px;
+    .footer-img {
+      width: 120px;
+      height: 120px;
+      object-fit: cover;
+      margin-bottom: 8px;
+      border-radius: 8px;
+    }
   }
 }
 
@@ -565,11 +597,22 @@ $transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .user-actions {
-    .user-dropdown {
-      padding: 4px 8px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
 
-      .username {
-        max-width: 80px;
+    .user-dropdown {
+      padding: 8px;
+      border-radius: 100%;
+
+      .user-avatar {
+        box-shadow: $shadow-light;
+        background-color: #fff;
+      }
+
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: $shadow-light;
       }
     }
   }

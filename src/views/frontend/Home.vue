@@ -1,70 +1,10 @@
 <template>
   <div class="home-container">
-    <!-- 顶部搜索栏 -->
-    <!-- <div class="search-header">
-      <div class="glass-container">
-        <div class="search-wrapper">
-          <el-input
-            v-model="searchQuery"
-            placeholder="搜索你感兴趣的图书..."
-            class="search-input"
-            prefix-icon="Search"
-            clearable
-            @keyup.enter="handleSearch"
-          >
-            <template #append>
-              <el-button @click="handleSearch">
-                <el-icon><Search /></el-icon>
-              </el-button>
-            </template>
-</el-input>
-
-<div class="user-actions" v-if="isLoggedIn">
-  <el-dropdown trigger="click">
-    <div class="avatar-container">
-      <el-avatar :src="'/api'+userStore.userInfo?.avatar || '/avatar-placeholder.png'" :size="40"></el-avatar>
-      <span class="welcome-text">欢迎，{{ userStore.userInfo?.name }}</span>
-    </div>
-    <template #dropdown>
-                <el-dropdown-menu>
-                  <el-dropdown-item @click="$router.push('/user/center')">个人中心</el-dropdown-item>
-                  <el-dropdown-item @click="$router.push('/user/borrow')">我的借阅</el-dropdown-item>
-                  <el-dropdown-item @click="$router.push('/user/favorites')">我的收藏</el-dropdown-item>
-                  <el-dropdown-item divided @click="handleLogout">退出登录</el-dropdown-item>
-                </el-dropdown-menu>
-              </template>
-  </el-dropdown>
-</div>
-<div class="auth-buttons" v-else>
-  <el-button type="primary" @click="$router.push('/login')">登录</el-button>
-  <el-button @click="$router.push('/register')">注册</el-button>
-</div>
-</div>
-</div>
-</div> -->
 
     <!-- 主要内容区域 -->
     <div class="main-content">
       <!-- 大型展示区 -->
       <div class="hero-section">
-        <div class="hero-content">
-          <h1 class="hero-title">图书室借阅管理系统</h1>
-          <p class="hero-subtitle">探索知识的海洋，发现阅读的乐趣</p>
-          <div class="hero-actions">
-            <el-button type="primary" size="large" class="primary-action" @click="$router.push('/book/list')">
-              <el-icon>
-                <Collection />
-              </el-icon>
-              浏览图书
-            </el-button>
-            <el-button size="large" class="secondary-action" @click="$router.push('/ranking')">
-              <el-icon>
-                <StarFilled />
-              </el-icon>
-              热门榜单
-            </el-button>
-          </div>
-        </div>
 
         <!-- 统计数据卡片 -->
         <div class="stats-cards">
@@ -115,6 +55,11 @@
               <div class="stat-label">注册用户</div>
             </div>
           </div>
+        </div>
+
+        <!-- 通知公告卡片 -->
+        <div class="notice">
+          通知公告
         </div>
       </div>
 
@@ -648,81 +593,6 @@ $transition-slow: all 0.5s ease;
   display: flex;
   flex-direction: column;
   gap: 40px;
-}
-
-// 英雄区域
-.hero-section {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  margin: 30px 0 50px;
-  position: relative;
-
-  .hero-content {
-    max-width: 700px;
-    margin-bottom: 40px;
-
-    .hero-title {
-      font-size: 48px;
-      font-weight: 700;
-      margin-bottom: 15px;
-      background: linear-gradient(45deg, $primary-color, $primary-dark);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      text-shadow: 0 5px 15px rgba(79, 157, 251, 0.2);
-    }
-
-    .hero-subtitle {
-      font-size: 20px;
-      color: $text-secondary;
-      margin-bottom: 30px;
-      line-height: 1.5;
-    }
-
-    .hero-actions {
-      display: flex;
-      justify-content: center;
-      gap: 15px;
-
-      .primary-action,
-      .secondary-action {
-        min-width: 150px;
-        height: 48px;
-        font-size: 16px;
-        border-radius: 50px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-        transition: $transition-normal;
-
-        .el-icon {
-          font-size: 18px;
-        }
-      }
-
-      .primary-action {
-        background: linear-gradient(45deg, $primary-color, $primary-dark);
-        border: none;
-
-        &:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 8px 16px rgba(79, 157, 251, 0.3);
-        }
-      }
-
-      .secondary-action {
-        border: 2px solid $primary-color;
-        color: $primary-color;
-
-        &:hover {
-          background-color: rgba(79, 157, 251, 0.1);
-          transform: translateY(-2px);
-        }
-      }
-    }
-  }
 }
 
 // 统计卡片
@@ -1329,7 +1199,7 @@ $transition-slow: all 0.5s ease;
 
 // 响应式设计
 @media (max-width: 992px) {
-  .hero-section .hero-content .hero-title {
+  .hero-section {
     font-size: 36px;
   }
 
@@ -1369,26 +1239,6 @@ $transition-slow: all 0.5s ease;
     }
   }
 
-  .hero-section .hero-content {
-    .hero-title {
-      font-size: 32px;
-    }
-
-    .hero-subtitle {
-      font-size: 18px;
-    }
-
-    .hero-actions {
-      flex-direction: column;
-      width: 100%;
-
-      .primary-action,
-      .secondary-action {
-        width: 100%;
-      }
-    }
-  }
-
   .section-title {
     flex-direction: column;
     align-items: flex-start;
@@ -1410,7 +1260,7 @@ $transition-slow: all 0.5s ease;
 }
 
 @media (max-width: 480px) {
-  .hero-section .hero-content .hero-title {
+  .hero-section {
     font-size: 28px;
   }
 

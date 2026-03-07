@@ -40,12 +40,6 @@ const frontendRoutes = [
         meta: { title: "首页" },
       },
       {
-        path: "about",
-        name: "About",
-        component: () => import("@/views/frontend/About.vue"),
-        meta: { title: "关于我们", isPublic: true },
-      },
-      {
         path: "book/list",
         name: "FrontendBookList",
         component: () => import("@/views/frontend/book/BookList.vue"),
