@@ -52,12 +52,6 @@ const frontendRoutes = [
         meta: { title: "图书详情" },
       },
       {
-        path: "ranking",
-        name: "RankingList",
-        component: () => import("@/views/frontend/RankingList.vue"),
-        meta: { title: "图书榜单" },
-      },
-      {
         path: "profile",
         name: "Profile",
         component: () => import("@/views/frontend/user/Profile.vue"),

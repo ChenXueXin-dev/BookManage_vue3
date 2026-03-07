@@ -26,12 +26,6 @@
             </el-icon>
             <span>图书浏览</span>
           </router-link>
-          <router-link to="/ranking" class="nav-item">
-            <el-icon class="nav-icon">
-              <StarFilled />
-            </el-icon>
-            <span>热门排行</span>
-          </router-link>
         </nav>
         <div class="user-actions">
           <template v-if="isLoggedIn">
