@@ -93,7 +93,7 @@
             @click="navigateToCategory(category.id)">
             <div class="category-icon">
               <el-icon>
-                <Folder />
+                <Reading />
               </el-icon>
             </div>
             <div class="category-info">
@@ -172,8 +172,7 @@
 
         <div v-if="!isLoggedIn" class="loading-skeleton">
           <div class="login-prompt-card">
-            <h2>登录获取个性化推荐</h2>
-            <p>登录后系统将根据您的阅读历史和兴趣为您推荐图书</p>
+            <h2>登录获取专属图书推荐</h2>
             <el-button type="primary" size="large" @click="$router.push('/login')">立即登录</el-button>
           </div>
         </div>
@@ -442,7 +441,8 @@ onBeforeUnmount(() => {
 $primary-color: #4F9DFB;
 $primary-light: #E3F2FD;
 $primary-dark: #247ADB;
-$primary-gradient: linear-gradient(135deg, #409EFF, #7262fd);
+$primary-gradient: linear-gradient(135deg, #409EFF, #57ffb9);
+$background-gradient: linear-gradient(135deg, #d8ecff 0%, #edf6ff 40%, #bcffdd 100%);
 $accent-color: #FF9800;
 $text-primary: #37474F;
 $text-secondary: #607D8B;
@@ -463,7 +463,8 @@ $transition-slow: all 0.5s ease;
 // 全局样式
 .home-container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #F5F7FA 0%, #E4ECF7 100%);
+  background: $background-gradient;
+
   position: relative;
   padding-bottom: 60px;
 }
@@ -854,7 +855,7 @@ $transition-slow: all 0.5s ease;
       height: 44px;
       font-size: 16px;
       border-radius: 50px;
-      background: linear-gradient(45deg, $primary-color, $primary-dark);
+      background: $primary-gradient;
       border: none;
       transition: $transition-normal;
 
@@ -928,7 +929,7 @@ $transition-slow: all 0.5s ease;
   }
 }
 
-// 热门图书区域
+// 读者之选
 .featured-books {
   .books-carousel {
     margin: 0 auto;
@@ -1050,7 +1051,7 @@ $transition-slow: all 0.5s ease;
   }
 }
 
-// 个性化推荐区域
+// 图书推荐
 .recommendations-section {
   margin-bottom: 20px;
 

@@ -30,7 +30,7 @@
             <el-icon class="nav-icon">
               <StarFilled />
             </el-icon>
-            <span>热门榜单</span>
+            <span>热门排行</span>
           </router-link>
         </nav>
         <div class="user-actions">
@@ -155,10 +155,7 @@
           </template>
           <template v-else>
             <router-link to="/login" class="login-btn">
-              <el-button type="primary" plain size="small">登录</el-button>
-            </router-link>
-            <router-link to="/register" class="register-btn">
-              <el-button type="primary" size="small">注册</el-button>
+              <el-button plain>去登录</el-button>
             </router-link>
           </template>
         </div>
@@ -296,9 +293,10 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 $primary-color: #409EFF;
-$primary-gradient: linear-gradient(135deg, #409EFF, #57ffb9);
+$green-color: rgb(175, 223, 255);
+$primary-gradient: linear-gradient(135deg, #409EFF, #70ecb8);
 $nav-gradient: linear-gradient(135deg, #f2fffa, #409EFF, #f2fffa);
-$background-gradient: linear-gradient(135deg, #f0f7ff 0%, #e6f1ff 100%);
+$background-gradient: linear-gradient(135deg, #d8ecff 0%, #edf6ff 40%, #bcffdd 100%);
 $glass-effect: rgba(255, 255, 255, 0.8);
 $shadow-light: 0 4px 12px rgba(0, 0, 0, 0.05);
 $shadow-medium: 0 8px 24px rgba(0, 0, 0, 0.1);
@@ -381,7 +379,7 @@ $transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     .nav-icon {
       font-size: 28px;
       margin-right: 5px;
-      color: $primary-color;
+      color: $green-color;
       filter: drop-shadow(0 2px 4px rgba(64, 158, 255, 0.2));
     }
   }
@@ -409,6 +407,11 @@ $transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
     &.router-link-exact-active {
       color: $primary-color;
+
+      .nav-icon {
+        color: $primary-color;
+        filter: drop-shadow(0 2px 4px rgba(64, 158, 255, 0.3));
+      }
 
       &::after {
         width: 100%;
@@ -438,8 +441,7 @@ $transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
 
-  .login-btn,
-  .register-btn {
+  .login-btn {
     text-decoration: none;
 
     .el-button {
@@ -447,6 +449,8 @@ $transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       padding: 8px 20px;
       font-weight: 500;
       transition: $transition;
+      background: $primary-gradient;
+      color: #fff;
 
       &:hover {
         transform: translateY(-1px);
