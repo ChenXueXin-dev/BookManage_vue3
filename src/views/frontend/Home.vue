@@ -4,62 +4,76 @@
     <!-- 主要内容区域 -->
     <div class="main-content">
       <!-- 大型展示区 -->
-      <div class="hero-section">
+      <div class="card-content">
 
-        <!-- 统计数据卡片 -->
-        <div class="stats-cards">
-          <div class="stat-card">
-            <div class="stat-icon">
-              <el-icon>
-                <Reading />
-              </el-icon>
-            </div>
-            <div class="stat-content">
-              <div class="stat-number">{{ stats.bookCount || 0 }}</div>
-              <div class="stat-label">馆藏图书</div>
-            </div>
+        <!-- 通知公告卡片 -->
+        <div class="notice-cards">
+          <div class="section-title">
+            <h2>通知公告</h2>
           </div>
-
-          <div class="stat-card">
-            <div class="stat-icon">
-              <el-icon>
-                <Folder />
-              </el-icon>
-            </div>
-            <div class="stat-content">
-              <div class="stat-number">{{ stats.categoryCount || 0 }}</div>
-              <div class="stat-label">图书分类</div>
-            </div>
-          </div>
-
-          <div class="stat-card">
-            <div class="stat-icon">
-              <el-icon>
-                <Paperclip />
-              </el-icon>
-            </div>
-            <div class="stat-content">
-              <div class="stat-number">{{ stats.borrowCount || 0 }}</div>
-              <div class="stat-label">借阅次数</div>
-            </div>
-          </div>
-
-          <div class="stat-card">
-            <div class="stat-icon">
-              <el-icon>
-                <User />
-              </el-icon>
-            </div>
-            <div class="stat-content">
-              <div class="stat-number">{{ stats.userCount || 0 }}</div>
-              <div class="stat-label">注册用户</div>
-            </div>
+          <div class="view-all">
           </div>
         </div>
 
-        <!-- 通知公告卡片 -->
-        <div class="notice">
-          通知公告
+        <!-- 活动公共卡片 -->
+        <div class="active-cards">
+          <div class="section-title">
+            <h2>活动公告</h2>
+          </div>
+          <div class="view-all">
+          </div>
+        </div>
+
+        <!-- 统计数据卡片 -->
+        <div class="stats-cards">
+          <div class="cards-item">
+            <div class="stat-card jyzitem">
+              <div class="start-title">
+                <div class="stat-icon">
+                  <el-icon>
+                    <View />
+                  </el-icon>
+                  <div class="stat-label">借阅中</div>
+                </div>
+              </div>
+              <div class="stat-number">{{ stats.bookCount || 0 }}</div>
+            </div>
+            <div class="stat-card yqitem">
+              <div class="start-title ">
+                <div class="stat-icon">
+                  <el-icon>
+                    <Warning />
+                  </el-icon>
+                  <div class="stat-label">已逾期</div>
+                </div>
+              </div>
+              <div class="stat-number">{{ stats.bookCount || 0 }}</div>
+            </div>
+          </div>
+          <div class="cards-item">
+            <div class="stat-card shitem">
+              <div class="start-title">
+                <div class="stat-icon">
+                  <el-icon>
+                    <Money />
+                  </el-icon>
+                  <div class="stat-label">待审核</div>
+                </div>
+              </div>
+              <div class="stat-number">{{ stats.borrowCount || 0 }}</div>
+            </div>
+            <div class="stat-card zjyitem">
+              <div class="start-title">
+                <div class="stat-icon">
+                  <el-icon>
+                    <Discount />
+                  </el-icon>
+                  <div class="stat-label">总借阅次数</div>
+                </div>
+              </div>
+              <div class="stat-number">{{ stats.borrowCount || 0 }}</div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -97,10 +111,10 @@
         </div>
       </div>
 
-      <!-- 热门图书展示区 -->
+      <!-- 读者之选区 -->
       <div class="featured-books">
         <div class="section-title">
-          <h2>热门图书</h2>
+          <h2>读者之选</h2>
           <router-link to="/book/list?sort=borrowedCount" class="view-all">
             查看全部 <el-icon>
               <ArrowRight />
@@ -143,14 +157,28 @@
         </div>
       </div>
 
-      <!-- 个性化推荐区 -->
-      <div class="recommendations-section" v-if="isLoggedIn">
+      <!-- 推荐区 -->
+      <div class="recommendations-section">
+
         <div class="section-title">
-          <h2>为您推荐</h2>
-          <span class="recommendation-description">根据您的阅读喜好，为您精选的图书</span>
+          <h2>图书推荐</h2>
+          <router-link v-if="isLoggedIn" to="/all-recommendations" class="view-all">
+            查看更多推荐 <el-icon>
+              <ArrowRight />
+            </el-icon>
+          </router-link>
         </div>
 
-        <div v-if="recommendationsLoading" class="loading-skeleton">
+
+        <div v-if="!isLoggedIn" class="loading-skeleton">
+          <div class="login-prompt-card">
+            <h2>登录获取个性化推荐</h2>
+            <p>登录后系统将根据您的阅读历史和兴趣为您推荐图书</p>
+            <el-button type="primary" size="large" @click="$router.push('/login')">立即登录</el-button>
+          </div>
+        </div>
+
+        <div v-else-if="recommendationsLoading" class="loading-skeleton">
           <el-skeleton :rows="2" animated>
             <template #template>
               <div class="recommendation-skeleton">
@@ -184,23 +212,6 @@
             </div>
           </div>
         </div>
-
-        <div class="view-more-recommendations">
-          <el-button type="primary" plain @click="$router.push('/all-recommendations')">
-            查看更多推荐 <el-icon>
-              <ArrowRight />
-            </el-icon>
-          </el-button>
-        </div>
-      </div>
-
-      <!-- 登录提示区 -->
-      <div class="login-prompt-section" v-else>
-        <div class="login-prompt-card">
-          <h2>登录获取个性化推荐</h2>
-          <p>登录后系统将根据您的阅读历史和兴趣为您推荐图书</p>
-          <el-button type="primary" size="large" @click="$router.push('/login')">立即登录</el-button>
-        </div>
       </div>
     </div>
 
@@ -219,19 +230,18 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted, computed, onBeforeUnmount } from "vue";
+import { ref, onMounted, computed, onBeforeUnmount } from "vue";
 import { useRouter } from "vue-router";
 import { useUserStore } from "@/store/user";
 import {
   ArrowRight,
   Folder,
-  Collection,
-  StarFilled,
   Reading,
-  User,
+  View,
+  Warning,
+  Money,
+  Discount,
   Top,
-  Search,
-  Paperclip
 } from "@element-plus/icons-vue";
 import { ElMessage } from "element-plus";
 import request from "@/utils/request";
@@ -481,109 +491,6 @@ $transition-slow: all 0.5s ease;
   }
 }
 
-// 搜索头部
-.search-header {
-  position: sticky;
-  top: 0;
-  left: 0;
-  width: 100%;
-  z-index: 100;
-  padding: 15px 0;
-
-  .glass-container {
-    @include glass-effect;
-    max-width: 1280px;
-    margin: 0 auto;
-    padding: 15px 25px;
-    border-radius: $border-radius;
-  }
-
-  .search-wrapper {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 20px;
-
-    .search-input {
-      flex: 1;
-      max-width: 700px;
-
-      :deep(.el-input__wrapper) {
-        border-radius: 50px;
-        padding-left: 10px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-        transition: $transition-fast;
-
-        &:hover,
-        &:focus-within {
-          box-shadow: 0 4px 12px rgba(79, 157, 251, 0.15);
-        }
-      }
-
-      :deep(.el-input__inner) {
-        font-size: 15px;
-        height: 44px;
-      }
-
-      :deep(.el-input-group__append) {
-        border-top-right-radius: 50px;
-        border-bottom-right-radius: 50px;
-        padding: 0;
-        background-color: transparent;
-        border-color: transparent;
-      }
-
-      :deep(.el-button) {
-        height: 44px;
-        width: 44px;
-        border-radius: 50%;
-        color: white;
-        padding: 0;
-        margin: 0 4px;
-        background: linear-gradient(45deg, $primary-color, $primary-dark);
-        border: none;
-        box-shadow: 0 3px 6px rgba(79, 157, 251, 0.2);
-        transition: $transition-normal;
-
-        &:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 5px 12px rgba(79, 157, 251, 0.3);
-        }
-
-        .el-icon {
-          font-size: 18px;
-        }
-      }
-    }
-
-    .user-actions {
-      .avatar-container {
-        display: flex;
-        align-items: center;
-        cursor: pointer;
-        padding: 5px 10px;
-        border-radius: 50px;
-        transition: $transition-fast;
-
-        &:hover {
-          background-color: rgba(0, 0, 0, 0.05);
-        }
-
-        .welcome-text {
-          margin-left: 10px;
-          font-size: 14px;
-          font-weight: 500;
-          color: $text-primary;
-        }
-      }
-    }
-
-    .auth-buttons {
-      display: flex;
-      gap: 10px;
-    }
-  }
-}
 
 // 主内容区域
 .main-content {
@@ -595,116 +502,267 @@ $transition-slow: all 0.5s ease;
   gap: 40px;
 }
 
-// 统计卡片
-.stats-cards {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
-  width: 100%;
-  max-width: 1200px;
-  margin: 40px auto 0;
-  padding: 0 20px;
 
-  @media (max-width: 1200px) {
-    grid-template-columns: repeat(2, 1fr);
-  }
+.card-content {
+  display: flex;
+  flex-direction: wrap;
 
-  @media (max-width: 768px) {
-    grid-template-columns: 1fr;
-  }
+  .notice-cards {
+    width: 45%;
 
-  .stat-card {
-    @include card;
-    display: flex;
-    align-items: center;
-    padding: 24px;
-    background: rgba(255, 255, 255, 0.9);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-
-    .stat-icon {
-      width: 60px;
-      height: 60px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 16px;
-      margin-right: 20px;
+    .view-all {
+      height: 400px;
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: $border-radius;
+      box-shadow: $box-shadow-light;
       transition: $transition-normal;
+      overflow: hidden;
+    }
+  }
 
-      .el-icon {
-        font-size: 30px;
+  .active-cards {
+    width: 45%;
+    padding: 0 10px;
+
+    .view-all {
+      height: 400px;
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: $border-radius;
+      box-shadow: $box-shadow-light;
+      transition: $transition-normal;
+      overflow: hidden;
+    }
+
+  }
+
+  // 统计卡片
+  .stats-cards {
+    margin-top: 55px;
+    width: 10%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    max-width: 1200px;
+    min-width: 400px;
+
+    .cards-item {
+      display: flex;
+
+      .stat-card {
+        display: flex;
+        align-items: center;
+        height: 180px;
+        margin: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: $border-radius;
+        box-shadow: $box-shadow-light;
         transition: $transition-normal;
+        overflow: hidden;
+        flex-direction: column;
+
+        .start-title {
+          height: 50%;
+          padding: 12px;
+
+          .stat-icon {
+            width: 200px;
+            height: 100px;
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+            justify-content: center;
+
+            .el-icon {
+              font-size: 50px;
+            }
+
+            .stat-label {
+              font-size: 20px;
+              color: $text-secondary;
+              font-weight: 500;
+            }
+
+          }
+        }
+
+        .stat-number {
+          height: 50%;
+          font-size: 48px;
+          font-weight: 700;
+          margin-bottom: 8px;
+          height: 100px;
+          line-height: 100px;
+        }
       }
-    }
 
-    .stat-content {
-      flex: 1;
+      .jyzitem {
+        background-color: rgba(57, 156, 255, 0.1);
 
-      .stat-number {
-        font-size: 32px;
-        font-weight: 700;
-        margin-bottom: 8px;
-        background: linear-gradient(135deg, $primary-color, $primary-dark);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
+        .start-title {
+          .stat-icon {
+            .el-icon {
+              color: #409eff;
+            }
+          }
+        }
+
+        .stat-number {
+          color: #409eff;
+        }
       }
 
-      .stat-label {
-        font-size: 15px;
-        color: $text-secondary;
-        font-weight: 500;
+      .yqitem {
+        background-color: rgba(149, 255, 0, 0.1);
+
+        .start-title {
+          .stat-icon {
+            .el-icon {
+              color: #67c23a;
+            }
+          }
+        }
+
+        .stat-number {
+          color: #67c23a;
+        }
+
       }
-    }
 
-    &:nth-child(1) {
-      .stat-icon {
-        background-color: rgba(64, 158, 255, 0.1);
+      .shitem {
+        background-color: rgba(6, 255, 64, 0.1);
 
-        .el-icon {
+        .start-title {
+          .stat-icon {
+            .el-icon {
+              color: #00ab78f3;
+            }
+          }
+        }
+
+        .stat-number {
+          color: #00ab78f3;
+        }
+
+      }
+
+      .zjyitem {
+        background-color: rgba(67, 217, 255, 0.2);
+
+        .start-title {
+          .stat-icon {
+            .el-icon {
+              color: #409eff;
+            }
+          }
+        }
+
+        .stat-number {
           color: #409eff;
         }
       }
     }
 
-    &:nth-child(2) {
-      .stat-icon {
-        background-color: rgba(103, 194, 58, 0.1);
 
-        .el-icon {
-          color: #67c23a;
-        }
-      }
-    }
 
-    &:nth-child(3) {
-      .stat-icon {
-        background-color: rgba(230, 162, 60, 0.1);
+    // .stat-card {
+    //   display: flex;
+    //   align-items: center;
+    //   padding: 12px;
+    //   // background: rgba(255, 255, 255, 0.9);
+    //   // backdrop-filter: blur(10px);
+    //   border: 1px solid rgba(255, 255, 255, 0.2);
+    //   border-radius: $border-radius;
+    //   box-shadow: $box-shadow-light;
+    //   transition: $transition-normal;
+    //   overflow: hidden;
 
-        .el-icon {
-          color: #e6a23c;
-        }
-      }
-    }
+    //   &:nth-child(1) {
+    //     background-color: rgba(64, 158, 255, 0.1);
+    //   }
 
-    &:nth-child(4) {
-      .stat-icon {
-        background-color: rgba(245, 108, 108, 0.1);
+    //   &:nth-child(2) {
+    //     background-color: rgba(103, 194, 58, 0.1);
+    //   }
 
-        .el-icon {
-          color: #f56c6c;
-        }
-      }
-    }
+    //   &:nth-child(3) {
+    //     background-color: rgba(230, 162, 60, 0.1);
+    //   }
 
-    &:hover {
-      transform: translateY(-5px);
+    //   .stat-icon {
+    //     width: 200px;
+    //     height: 60px;
+    //     display: flex;
+    //     align-items: center;
+    //     flex-direction: column;
+    //     justify-content: center;
+    //     border-radius: 16px;
+    //     margin-right: 20px;
 
-      .stat-icon {
-        transform: scale(1.1);
-      }
-    }
+    //     .el-icon {
+    //       font-size: 30px;
+    //     }
+
+    //   }
+
+    //   .stat-content {
+    //     flex: 1;
+
+    //     .stat-number {
+    //       font-size: 32px;
+    //       font-weight: 700;
+    //       margin-bottom: 8px;
+    //       background: linear-gradient(135deg, $primary-color, $primary-dark);
+    //       -webkit-background-clip: text;
+    //       -webkit-text-fill-color: transparent;
+    //     }
+
+    //     .stat-label {
+    //       font-size: 15px;
+    //       color: $text-secondary;
+    //       font-weight: 500;
+    //     }
+    //   }
+
+    //   &:nth-child(1) {
+    //     .stat-icon {
+    //       .el-icon {
+    //         color: #409eff;
+    //       }
+    //     }
+    //   }
+
+    //   &:nth-child(2) {
+    //     .stat-icon {
+    //       .el-icon {
+    //         color: #67c23a;
+    //       }
+    //     }
+    //   }
+
+    //   &:nth-child(3) {
+    //     .stat-icon {
+    //       .el-icon {
+    //         color: #e6a23c;
+    //       }
+    //     }
+    //   }
+
+    //   &:nth-child(4) {
+    //     .stat-icon {
+    //       background-color: rgba(245, 108, 108, 0.1);
+
+    //       .el-icon {
+    //         color: #f56c6c;
+    //       }
+    //     }
+    //   }
+    // }
   }
+
 }
 
 // 通用区域标题
@@ -770,6 +828,42 @@ $transition-slow: all 0.5s ease;
   border-radius: $border-radius;
   background-color: white;
   box-shadow: $box-shadow-light;
+
+  .login-prompt-card {
+    text-align: center;
+    padding: 40px 20px;
+    border-radius: $border-radius;
+
+    h2 {
+      font-size: 24px;
+      color: $text-primary;
+      margin-bottom: 15px;
+    }
+
+    p {
+      font-size: 16px;
+      color: $text-secondary;
+      margin-bottom: 25px;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .el-button {
+      min-width: 150px;
+      height: 44px;
+      font-size: 16px;
+      border-radius: 50px;
+      background: linear-gradient(45deg, $primary-color, $primary-dark);
+      border: none;
+      transition: $transition-normal;
+
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 16px rgba(79, 157, 251, 0.3);
+      }
+    }
+  }
 }
 
 // 分类卡片区域
@@ -1085,28 +1179,6 @@ $transition-slow: all 0.5s ease;
     }
   }
 
-  .view-more-recommendations {
-    display: flex;
-    justify-content: center;
-    margin-top: 25px;
-
-    .el-button {
-      font-size: 15px;
-      padding: 12px 25px;
-      border-radius: 50px;
-
-      .el-icon {
-        margin-left: 5px;
-        transition: $transition-fast;
-      }
-
-      &:hover {
-        .el-icon {
-          transform: translateX(4px);
-        }
-      }
-    }
-  }
 
   .recommendation-skeleton {
     display: flex;
@@ -1117,46 +1189,6 @@ $transition-slow: all 0.5s ease;
       width: 220px;
       height: 320px;
       flex: 0 0 auto;
-    }
-  }
-}
-
-// 登录提示区域
-.login-prompt-section {
-  .login-prompt-card {
-    @include glass-effect;
-    text-align: center;
-    padding: 40px 20px;
-    border-radius: $border-radius;
-
-    h2 {
-      font-size: 24px;
-      color: $text-primary;
-      margin-bottom: 15px;
-    }
-
-    p {
-      font-size: 16px;
-      color: $text-secondary;
-      margin-bottom: 25px;
-      max-width: 500px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    .el-button {
-      min-width: 150px;
-      height: 44px;
-      font-size: 16px;
-      border-radius: 50px;
-      background: linear-gradient(45deg, $primary-color, $primary-dark);
-      border: none;
-      transition: $transition-normal;
-
-      &:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 16px rgba(79, 157, 251, 0.3);
-      }
     }
   }
 }
@@ -1199,15 +1231,17 @@ $transition-slow: all 0.5s ease;
 
 // 响应式设计
 @media (max-width: 992px) {
-  .hero-section {
+  .card-content {
     font-size: 36px;
-  }
+    display: flex;
+    flex-direction: column;
 
-  .stats-cards {
-    flex-wrap: wrap;
+    .notice-cards {
+      width: 100%;
+    }
 
-    .stat-card {
-      min-width: 150px;
+    .active-cards {
+      width: 100%;
     }
   }
 
@@ -1228,14 +1262,6 @@ $transition-slow: all 0.5s ease;
     .user-actions,
     .auth-buttons {
       align-self: flex-end;
-    }
-  }
-
-  .stats-cards {
-    flex-direction: column;
-
-    .stat-card {
-      max-width: 100%;
     }
   }
 
@@ -1260,8 +1286,18 @@ $transition-slow: all 0.5s ease;
 }
 
 @media (max-width: 480px) {
-  .hero-section {
+  .card-content {
     font-size: 28px;
+    display: flex;
+    flex-direction: column;
+
+    .notice-cards {
+      width: 100%;
+    }
+
+    .active-cards {
+      width: 100%;
+    }
   }
 
   .featured-books .books-carousel :deep(.el-carousel__item) {
