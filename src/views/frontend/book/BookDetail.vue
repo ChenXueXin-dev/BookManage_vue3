@@ -555,7 +555,7 @@ $transition-slow: all 0.5s ease;
 .book-header {
   display: flex;
   padding: 35px;
-  background: linear-gradient(135deg, rgb(223, 224, 255) 0%,rgb(224, 225, 253) 40%,rgb(193, 231, 255) 100%);
+  background: linear-gradient(135deg, rgb(221, 222, 255) 0%,rgb(224, 225, 253) 40%,rgb(193, 231, 255) 100%);
   border-radius: $border-radius $border-radius 0 0;
   position: relative;
   overflow: hidden;
