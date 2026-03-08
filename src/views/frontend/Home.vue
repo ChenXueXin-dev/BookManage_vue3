@@ -77,10 +77,205 @@
         </div>
       </div>
 
-      <!-- 图书分类区 -->
+      <!-- 排行区域 -->
+      <div class="ranking-books">
+        <div class="ranking-content">
+          <!-- 新书榜单 -->
+          <div class="ranking-block">
+            <div class="section-header">
+              <h2>新书榜单</h2>
+              <router-link to="/book/list?orderBy=createTime" class="more-link">
+                更多 <el-icon>
+                  <ArrowRight />
+                </el-icon>
+              </router-link>
+            </div>
+
+            <div v-if="newBooksLoading" class="loading-container">
+              <el-skeleton :rows="10" animated />
+            </div>
+
+            <div v-else class="ranking-list">
+              <div class="ranking-title">
+                <span>排名</span>
+                <span>书名</span>
+                <span>上架时间</span>
+              </div>
+              <div v-for="(book, index) in newBooks" :key="book.id" class="ranking-item"
+                @click="viewBookDetail(book.id)">
+                <div class="book-rank" :class="[
+                  { 'rank-first': index === 0 },
+                  { 'rank-second': index === 1 },
+                  { 'rank-third': index === 2 }
+                ]">
+                  <el-icon v-if="[0, 1, 2].includes(index)" class="medal-icon" :class="[
+                    { 'first': index === 0 },
+                    { 'second': index === 1 },
+                    { 'third': index === 2 }
+                  ]">
+                    <Medal />
+                  </el-icon>
+                  <div v-else>
+                    {{ index + 1 }}
+                  </div>
+                </div>
+                <div class="book-info">
+                  <span class="book-title" :title="book.title">{{ book.title }}</span>
+                  <span class="book-meta">{{ formatDate(book.createTime) }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- 人气借阅 -->
+          <div class="ranking-block">
+            <div class="section-header">
+              <h2>人气借阅</h2>
+              <router-link to="/book/list?orderBy=borrowedCount" class="more-link">
+                更多 <el-icon>
+                  <ArrowRight />
+                </el-icon>
+              </router-link>
+            </div>
+
+            <div v-if="hotBorrowLoading" class="loading-container">
+              <el-skeleton :rows="10" animated />
+            </div>
+
+            <div v-else class="ranking-list">
+              <div class="ranking-title">
+                <span>排名</span>
+                <span>书名</span>
+                <span>借阅量</span>
+              </div>
+              <div v-for="(book, index) in hotBorrowBooks" :key="book.id" class="ranking-item"
+                @click="viewBookDetail(book.id)">
+                <div class="book-rank" :class="[
+                  { 'rank-first': index === 0 },
+                  { 'rank-second': index === 1 },
+                  { 'rank-third': index === 2 }
+                ]">
+                  <el-icon v-if="[0, 1, 2].includes(index)" class="medal-icon" :class="[
+                    { 'first': index === 0 },
+                    { 'second': index === 1 },
+                    { 'third': index === 2 }
+                  ]">
+                    <Medal />
+                  </el-icon>
+                  <div v-else>
+                    {{ index + 1 }}
+                  </div>
+                </div>
+                <div class="book-info">
+                  <span class="book-title" :title="book.title">{{ book.title }}</span>
+                  <span class="book-meta">{{ book.borrowedCount || 0 }}次</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- 收藏榜单 -->
+          <div class="ranking-block">
+            <div class="section-header">
+              <h2>收藏榜单</h2>
+              <router-link to="/book/list?orderBy=collectionCount" class="more-link">
+                更多 <el-icon>
+                  <ArrowRight />
+                </el-icon>
+              </router-link>
+            </div>
+
+            <div v-if="hotCollectionLoading" class="loading-container">
+              <el-skeleton :rows="10" animated />
+            </div>
+
+            <div v-else class="ranking-list">
+              <div class="ranking-title">
+                <span>排名</span>
+                <span>书名</span>
+                <span>收藏量</span>
+              </div>
+              <div v-for="(book, index) in hotCollectionBooks" :key="book.id" class="ranking-item"
+                @click="viewBookDetail(book.id)">
+                <div class="book-rank" :class="[
+                  { 'top-three': index < 3 },
+                  { 'rank-first': index === 0 },
+                  { 'rank-second': index === 1 },
+                  { 'rank-third': index === 2 }
+                ]">
+                  <el-icon class="medal-icon" :class="[
+                    { 'top-three': index < 3 },
+                    { 'first': index === 0 },
+                    { 'second': index === 1 },
+                    { 'third': index === 2 }
+                  ]">
+                    <Medal />
+                  </el-icon>
+                </div>
+                <div class="book-info">
+                  <span class="book-title" :title="book.title">{{ book.title }}</span>
+                  <span class="book-meta">{{ book.collectionCount || 0 }}次</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 评分排行 -->
+          <div class="ranking-block">
+            <div class="section-header">
+              <h2>评分排行</h2>
+              <router-link to="/book/list?orderBy=avgScore" class="more-link">
+                更多 <el-icon>
+                  <ArrowRight />
+                </el-icon>
+              </router-link>
+            </div>
+
+            <div v-if="topRatedLoading" class="loading-container">
+              <el-skeleton :rows="10" animated />
+            </div>
+
+            <div v-else class="ranking-list">
+              <div class="ranking-title">
+                <span>排名</span>
+                <span>书名</span>
+                <span>评分</span>
+              </div>
+              <div v-for="(book, index) in topRatedBooks" :key="book.id" class="ranking-item"
+                @click="viewBookDetail(book.id)">
+                <div class="book-rank" :class="[
+                  { 'rank-first': index === 0 },
+                  { 'rank-second': index === 1 },
+                  { 'rank-third': index === 2 }
+                ]">
+                  <el-icon v-if="[0, 1, 2].includes(index)" class="medal-icon" :class="[
+                    { 'first': index === 0 },
+                    { 'second': index === 1 },
+                    { 'third': index === 2 }
+                  ]">
+                    <Medal />
+                  </el-icon>
+                  <div v-else>
+                    {{ index + 1 }}
+                  </div>
+                </div>
+
+                <div class="book-info">
+                  <span class="book-title" :title="book.title">{{ book.title }}</span>
+                  <div class="book-rating">
+                    <el-rate v-model="book.avgScore" disabled text-color="#ff9900" size="small" :max="5"
+                      :allow-half="true" />
+                    <span class="score-text">{{ book.avgScore.toFixed(1) }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 书类导航 -->
       <div class="categories-section">
         <div class="section-title">
-          <h2>图书分类</h2>
+          <h2>书类导航</h2>
           <router-link to="/book/list" class="view-all">
             查看全部 <el-icon>
               <ArrowRight />
@@ -91,18 +286,15 @@
         <div class="categories-wrapper" v-if="!categoriesLoading">
           <div class="category-card" v-for="category in categories" :key="category.id"
             @click="navigateToCategory(category.id)">
-            <div class="category-icon">
-              <el-icon>
-                <Reading />
-              </el-icon>
-            </div>
             <div class="category-info">
-              <h3 class="category-name">{{ category.name }}</h3>
-              <span class="category-count">{{ category.bookCount }}本图书</span>
+              <h3 class="category-name">{{ category.name }}
+              </h3>
+              <span class="category-count">
+                <span class="bookCount">
+                  {{ category.bookCount }}
+                </span>
+                本图书</span>
             </div>
-            <el-icon class="category-arrow">
-              <ArrowRight />
-            </el-icon>
           </div>
         </div>
 
@@ -157,170 +349,6 @@
         </div>
       </div>
 
-      <!-- 排行区域 -->
-      <div class="ranking-books">
-
-        <div class="ranking-content">
-          <!-- 新书榜单 -->
-          <div class="ranking-block">
-            <div class="section-header">
-              <h2>新书榜单</h2>
-              <router-link to="/book/list?orderBy=createTime" class="more-link">
-                更多 <el-icon>
-                  <ArrowRight />
-                </el-icon>
-              </router-link>
-            </div>
-
-            <div v-if="newBooksLoading" class="loading-container">
-              <el-skeleton :rows="10" animated />
-            </div>
-
-            <div v-else class="ranking-list">
-              <div class="ranking-title">
-                <span>排名</span>
-                <span>书名</span>
-                <span>上架时间</span>
-              </div>
-              <div v-for="(book, index) in newBooks" :key="book.id" class="ranking-item"
-                @click="viewBookDetail(book.id)">
-                <div class="book-rank" :class="[
-                  { 'top-three': index < 3 },
-                  { 'rank-first': index === 0 },
-                  { 'rank-second': index === 1 },
-                  { 'rank-third': index === 2 }
-                ]">
-                  {{ index + 1 }}
-                </div>
-                <div class="book-info">
-                  <span class="book-title" :title="book.title">{{ book.title }}</span>
-                  <span class="book-meta">{{ formatDate(book.createTime) }}</span>
-                </div>
-              </div>
-            </div>
-          </div>
-          <!-- 人气借阅 -->
-          <div class="ranking-block">
-            <div class="section-header">
-              <h2>人气借阅</h2>
-              <router-link to="/book/list?orderBy=borrowedCount" class="more-link">
-                更多 <el-icon>
-                  <ArrowRight />
-                </el-icon>
-              </router-link>
-            </div>
-
-            <div v-if="hotBorrowLoading" class="loading-container">
-              <el-skeleton :rows="10" animated />
-            </div>
-
-            <div v-else class="ranking-list">
-              <div class="ranking-title">
-                <span>排名</span>
-                <span>书名</span>
-                <span>借阅量</span>
-              </div>
-              <div v-for="(book, index) in hotBorrowBooks" :key="book.id" class="ranking-item"
-                @click="viewBookDetail(book.id)">
-                <div class="book-rank" :class="[
-                  { 'top-three': index < 3 },
-                  { 'rank-first': index === 0 },
-                  { 'rank-second': index === 1 },
-                  { 'rank-third': index === 2 }
-                ]">
-                  {{ index + 1 }}
-                </div>
-                <div class="book-info">
-                  <span class="book-title" :title="book.title">{{ book.title }}</span>
-                  <span class="book-meta">{{ book.borrowedCount || 0 }}次</span>
-                </div>
-              </div>
-            </div>
-          </div>
-          <!-- 收藏榜单 -->
-          <div class="ranking-block">
-            <div class="section-header">
-              <h2>收藏榜单</h2>
-              <router-link to="/book/list?orderBy=collectionCount" class="more-link">
-                更多 <el-icon>
-                  <ArrowRight />
-                </el-icon>
-              </router-link>
-            </div>
-
-            <div v-if="hotCollectionLoading" class="loading-container">
-              <el-skeleton :rows="10" animated />
-            </div>
-
-            <div v-else class="ranking-list">
-              <div class="ranking-title">
-                <span>排名</span>
-                <span>书名</span>
-                <span>收藏量</span>
-              </div>
-              <div v-for="(book, index) in hotCollectionBooks" :key="book.id" class="ranking-item"
-                @click="viewBookDetail(book.id)">
-                <div class="book-rank" :class="[
-                  { 'top-three': index < 3 },
-                  { 'rank-first': index === 0 },
-                  { 'rank-second': index === 1 },
-                  { 'rank-third': index === 2 }
-                ]">
-                  {{ index + 1 }}
-                </div>
-                <div class="book-info">
-                  <span class="book-title" :title="book.title">{{ book.title }}</span>
-                  <span class="book-meta">{{ book.collectionCount || 0 }}次</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- 评分排行 -->
-          <div class="ranking-block">
-            <div class="section-header">
-              <h2>评分排行</h2>
-              <router-link to="/book/list?orderBy=avgScore" class="more-link">
-                更多 <el-icon>
-                  <ArrowRight />
-                </el-icon>
-              </router-link>
-            </div>
-
-            <div v-if="topRatedLoading" class="loading-container">
-              <el-skeleton :rows="10" animated />
-            </div>
-
-            <div v-else class="ranking-list">
-              <div class="ranking-title">
-                <span>排名</span>
-                <span>书名</span>
-                <span>评分</span>
-              </div>
-              <div v-for="(book, index) in topRatedBooks" :key="book.id" class="ranking-item"
-                @click="viewBookDetail(book.id)">
-                <div class="book-rank" :class="[
-                  { 'top-three': index < 3 },
-                  { 'rank-first': index === 0 },
-                  { 'rank-second': index === 1 },
-                  { 'rank-third': index === 2 }
-                ]">
-                  {{ index + 1 }}
-                </div>
-                <div class="book-info">
-                  <span class="book-title" :title="book.title">{{ book.title }}</span>
-                  <div class="book-rating">
-                    <el-rate v-model="book.avgScore" disabled text-color="#ff9900" size="small" :max="5"
-                      :allow-half="true" />
-                    <span class="score-text">{{ book.avgScore.toFixed(1) }}</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-      </div>
       <!-- 推荐区 -->
       <div class="recommendations-section">
 
@@ -401,6 +429,7 @@ import { useUserStore } from "@/store/user";
 import {
   ArrowRight,
   Folder,
+  Medal,
   Reading,
   View,
   Warning,
@@ -695,7 +724,9 @@ const formatDate = (dateString) => {
 $primary-color: #4F9DFB;
 $primary-light: #E3F2FD;
 $primary-dark: #247ADB;
+$green-color: #4edba0;
 $primary-gradient: linear-gradient(135deg, #409EFF, #57ffb9);
+$primary-gradient-low: linear-gradient(135deg, #77bafe, #77bafe 40%, #90edc6);
 $background-gradient: linear-gradient(135deg, #d8ecff 0%, #edf6ff 40%, #bcffdd 100%);
 $accent-color: #FF9800;
 $text-primary: #37474F;
@@ -1125,7 +1156,7 @@ $transition-slow: all 0.5s ease;
 .categories-section {
   .categories-wrapper {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
     gap: 20px;
   }
 
@@ -1136,50 +1167,35 @@ $transition-slow: all 0.5s ease;
     padding: 20px;
     cursor: pointer;
 
-    .category-icon {
-      width: 50px;
-      height: 50px;
-      border-radius: 12px;
-      background-color: $primary-light;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-right: 15px;
-
-      .el-icon {
-        font-size: 24px;
-        color: $primary-color;
-      }
-    }
-
     .category-info {
       flex: 1;
 
       .category-name {
         font-size: 18px;
         font-weight: 500;
-        color: $text-primary;
+        color: $primary-color;
         margin: 0 0 5px;
       }
 
       .category-count {
         font-size: 14px;
         color: $text-secondary;
+
+        .bookCount {
+          font-size: 28px;
+          font-weight: 500;
+          color: $green-color;
+        }
       }
     }
 
-    .category-arrow {
-      font-size: 18px;
-      color: $text-secondary;
-      transition: $transition-fast;
-    }
 
-    &:hover {
-      .category-arrow {
-        transform: translateX(5px);
-        color: $primary-color;
-      }
-    }
+    // &:hover {
+    //   .category-arrow {
+    //     transform: translateX(5px);
+    //     color: $primary-color;
+    //   }
+    // }
   }
 }
 
@@ -1309,7 +1325,6 @@ $transition-slow: all 0.5s ease;
   .ranking-content {
     display: flex;
     justify-content: space-between;
-
   }
 }
 
@@ -1327,16 +1342,17 @@ $transition-slow: all 0.5s ease;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20px 25px;
+  padding: 5px 0 0 10px;
   border-bottom: 1px solid $background-medium;
-  background: linear-gradient(to right, $primary-light, white);
+  background: $primary-gradient-low;
+  color: #fff;
 
   h2 {
     font-size: 20px;
     margin: 0;
     position: relative;
     padding-left: 15px;
-    color: $text-primary;
+    color: #fff;
     font-weight: 600;
 
     &::before {
@@ -1347,7 +1363,7 @@ $transition-slow: all 0.5s ease;
       transform: translateY(-50%);
       width: 4px;
       height: 20px;
-      background: $primary-color;
+      background: #fff;
       border-radius: 2px;
     }
   }
@@ -1355,7 +1371,7 @@ $transition-slow: all 0.5s ease;
   .more-link {
     display: flex;
     align-items: center;
-    color: $primary-color;
+    color: #fff;
     font-size: 14px;
     text-decoration: none;
     font-weight: 500;
@@ -1364,7 +1380,6 @@ $transition-slow: all 0.5s ease;
     border-radius: 20px;
 
     &:hover {
-      background-color: $primary-light;
       transform: translateX(3px);
     }
 
@@ -1385,7 +1400,7 @@ $transition-slow: all 0.5s ease;
   .ranking-title {
     display: flex;
     justify-content: space-between;
-    padding: 10px 25px;
+    padding: 2px 10px;
     font-size: 13px;
     color: $text-secondary;
     border-bottom: 1px solid $background-medium;
@@ -1413,7 +1428,7 @@ $transition-slow: all 0.5s ease;
   .ranking-item {
     display: flex;
     align-items: center;
-    padding: 12px 25px;
+    padding: 10px 10px;
     border-bottom: 1px solid $background-light;
     cursor: pointer;
     transition: $transition-normal;
@@ -1446,38 +1461,59 @@ $transition-slow: all 0.5s ease;
       }
     }
 
+    $transition-normal: all 0.3s ease;
+    $shadow-light: 0 4px 12px rgba(0, 0, 0, 0.05);
+
     .book-rank {
-      width: 30px;
-      height: 30px;
-      line-height: 30px;
-      text-align: center;
-      background-color: $background-dark;
-      color: $text-secondary;
-      border-radius: 6px;
-      font-size: 14px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
       margin-right: 15px;
       flex-shrink: 0;
-      font-weight: bold;
-      box-shadow: $box-shadow-light;
       transition: $transition-normal;
 
-      &.top-three {
-        color: white;
+      &:hover {
+        transform: scale(1.1);
+        box-shadow: $shadow-light;
       }
 
       &.rank-first {
-        background: linear-gradient(45deg, #f56c6c, #ff9068);
-        box-shadow: 0 4px 10px rgba(#f56c6c, 0.3);
+        background-color: rgba(255, 217, 0, 0.2);
       }
 
       &.rank-second {
-        background: linear-gradient(45deg, #e6a23c, #faad7d);
-        box-shadow: 0 4px 10px rgba(#e6a23c, 0.3);
+        background-color: rgba(192, 192, 192, 0.2);
       }
 
       &.rank-third {
-        background: linear-gradient(45deg, $primary-color, lighten($primary-color, 15%));
-        box-shadow: 0 4px 10px rgba($primary-color, 0.3);
+        background-color: rgba(205, 127, 50, 0.2);
+      }
+
+      &:not(.rank-first):not(.rank-second):not(.rank-third) {
+        background-color: rgba(245, 247, 250, 0.8);
+      }
+    }
+
+    .medal-icon {
+      font-size: 20px;
+      transition: $transition-normal;
+
+      &.first {
+        color: #FFD700;
+        background: linear-gradient(135deg, #FFD700, #FFA500);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      &.second {
+        color: #909399;
+      }
+
+      &.third {
+        color: #CD7F32;
       }
     }
 
