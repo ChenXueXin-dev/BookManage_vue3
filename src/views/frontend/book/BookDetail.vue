@@ -1,12 +1,7 @@
 <template>
   <div class="book-detail-container" v-loading="loading">
     <div class="back-navigation">
-      <div class="back-button" @click="goBack">
-        <el-icon>
-          <ArrowLeft />
-        </el-icon>
-        返回
-      </div>
+      <el-button @click="goBack" icon="ArrowLeft">返回</el-button>
     </div>
 
     <div v-if="book" class="book-detail">
@@ -190,7 +185,7 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
-import { ArrowLeft, ChatDotRound, Delete } from '@element-plus/icons-vue';
+import {  ChatDotRound, Delete } from '@element-plus/icons-vue';
 import { ElMessage } from 'element-plus';
 import request from '@/utils/request';
 import DateUtils from '@/utils/dateUtils';
@@ -555,7 +550,7 @@ $transition-slow: all 0.5s ease;
 .book-header {
   display: flex;
   padding: 35px;
-  background: linear-gradient(135deg, rgb(221, 222, 255) 0%,rgb(224, 225, 253) 40%,rgb(193, 231, 255) 100%);
+  background: linear-gradient(135deg, #f5efff 0%, #e0eeff 100%);
   border-radius: $border-radius $border-radius 0 0;
   position: relative;
   overflow: hidden;
