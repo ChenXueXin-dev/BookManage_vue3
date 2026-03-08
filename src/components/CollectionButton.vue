@@ -1,9 +1,8 @@
 <template>
-  <el-button v-if="isIcon" :type="isCollected ? 'warning' : ''" circle :icon="Star"
-    @click="toggleCollection" />
-  <el-button v-else :type="isCollected ? 'danger' : 'warning'" :icon="isCollected ? Star : StarFilled"
-    :loading="loading" @click="toggleCollection" class="collection-btn" size="small">
-    {{ isCollected ? '已收藏' : '收藏' }}
+  <el-button v-if="isIcon" :type="isCollected ? 'warning' : ''" circle :icon="Star" @click="toggleCollection" />
+  <el-button v-else :type="isCollected ? 'warning' : 'info'" :icon="isCollected ? Star : StarFilled" :loading="loading"
+    @click="toggleCollection" class="collection-btn" size="small">
+    {{ isCollected ? '取消收藏' : '收藏' }}
   </el-button>
 </template>
 
@@ -85,21 +84,8 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 .collection-btn {
-  background-color: #E6A23C;
   border: none;
   border-radius: 4px;
   transition: all 0.2s ease;
-
-  &:hover {
-    opacity: 0.9;
-  }
-
-  &:active {
-    opacity: 0.8;
-  }
-
-  &.el-button--danger {
-    background-color: #F56C6C;
-  }
 }
 </style>

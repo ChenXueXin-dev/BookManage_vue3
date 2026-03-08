@@ -1728,9 +1728,9 @@ $transition-slow: all 0.5s ease;
   .back-to-top {
     width: 50px;
     height: 50px;
-    background: linear-gradient(45deg, $primary-color, $primary-dark);
+    background: $primary-gradient-low;
     border: none;
-    box-shadow: 0 5px 15px rgba(79, 157, 251, 0.3);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
     transition: $transition-normal;
     opacity: 0;
 
