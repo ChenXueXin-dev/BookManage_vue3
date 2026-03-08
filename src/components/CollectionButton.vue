@@ -1,12 +1,8 @@
 <template>
-  <el-button 
-    :type="isCollected ? 'danger' : 'warning'" 
-    :icon="isCollected ? Star : StarFilled" 
-    :loading="loading"
-    @click="toggleCollection"
-    class="collection-btn"
-    size="small"
-  >
+  <el-button v-if="isIcon" :type="isCollected ? 'warning' : ''" circle :icon="Star"
+    @click="toggleCollection" />
+  <el-button v-else :type="isCollected ? 'danger' : 'warning'" :icon="isCollected ? Star : StarFilled"
+    :loading="loading" @click="toggleCollection" class="collection-btn" size="small">
     {{ isCollected ? '已收藏' : '收藏' }}
   </el-button>
 </template>
@@ -22,6 +18,10 @@ const props = defineProps({
   bookId: {
     type: Number,
     required: true
+  },
+  isIcon: {
+    type: Boolean,
+    default: false
   }
 })
 
@@ -48,14 +48,14 @@ const checkCollection = async () => {
 // 切换收藏状态
 const toggleCollection = async () => {
   if (!props.bookId) return
-  
+
   // 检查是否登录
   if (!localStorage.getItem('token')) {
     ElMessage.warning('请先登录再进行收藏')
     router.push('/login?redirect=' + encodeURIComponent(route.fullPath))
     return
   }
-  
+
   loading.value = true
   try {
     if (isCollected.value) {
@@ -89,17 +89,17 @@ onMounted(() => {
   border: none;
   border-radius: 4px;
   transition: all 0.2s ease;
-  
+
   &:hover {
     opacity: 0.9;
   }
-  
+
   &:active {
     opacity: 0.8;
   }
-  
+
   &.el-button--danger {
     background-color: #F56C6C;
   }
 }
-</style> 
+</style>

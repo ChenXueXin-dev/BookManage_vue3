@@ -24,7 +24,7 @@
             <el-icon class="nav-icon">
               <Menu />
             </el-icon>
-            <span>图书浏览</span>
+            <span>图书</span>
           </router-link>
         </nav>
         <div class="user-actions">
