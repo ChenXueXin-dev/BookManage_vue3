@@ -159,21 +159,18 @@ $primary-gradient-red-orange: linear-gradient(135deg, #f98a6c, #fdd888);
 .user-collection-container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 20px;
+  padding: 0 20px;
   min-height: calc(100vh - 64px - 20px);
 }
 
 // 顶部区域样式
 .top-section {
-  margin-bottom: 25px;
-
   .page-header {
     margin-bottom: 20px;
 
     .section-title {
       font-size: 22px;
       font-weight: 600;
-      margin: 0 0 25px;
       color: #333;
       padding-left: 15px;
       border-left: 4px solid #409EFF;
@@ -206,12 +203,9 @@ $primary-gradient-red-orange: linear-gradient(135deg, #f98a6c, #fdd888);
 }
 
 .book-list {
-  // 直接给整个列表加内边距，保证左右有间距
-  padding: 0 10px;
 
   .book-card-wrapper {
-    // 核心：上下左右都给间距！
-    padding: 10px;
+    padding: 5px;
     height: 100%;
   }
 
@@ -339,11 +333,6 @@ $primary-gradient-red-orange: linear-gradient(135deg, #f98a6c, #fdd888);
 .pagination-container {
   display: flex;
   justify-content: center;
-  padding: 20px 15px;
-  background: white;
-  border-radius: 8px;
-  box-shadow: var(--card-shadow);
-  margin-top: 10px;
 }
 
 // 响应式调整
