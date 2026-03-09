@@ -4,7 +4,7 @@
       <span class="logo-text">图书室借阅管理系统</span>
     </div>
     <div class="menu-wrapper">
-      <el-menu :default-active="activeMenu" mode="vertical" class="sidebar-menu" text-color="#37474F"
+      <el-menu :default-active="activeMenu" mode="vertical" class="sidebar-menu" text-color="black"
         active-text-color="#FFFFFF" unique-opened router>
         <!-- 静态菜单 -->
         <el-menu-item index="/back/dashboard">
@@ -35,13 +35,6 @@
           </el-menu-item>
         </el-sub-menu>
 
-        <el-menu-item index="/back/user-management">
-          <el-icon>
-            <component :is="'User'" />
-          </el-icon>
-          <template #title>用户管理</template>
-        </el-menu-item>
-
         <el-menu-item index="/back/borrow/management">
           <el-icon>
             <component :is="'Document'" />
@@ -54,6 +47,13 @@
             <component :is="'ChatDotRound'" />
           </el-icon>
           <template #title>评论管理</template>
+        </el-menu-item>
+
+        <el-menu-item index="/back/user-management">
+          <el-icon>
+            <component :is="'User'" />
+          </el-icon>
+          <template #title>用户管理</template>
         </el-menu-item>
 
         <el-menu-item index="/back/system/config">
@@ -73,12 +73,11 @@ import { useRoute } from 'vue-router'
 
 const route = useRoute()
 
-// 当前激活的菜单
+// 当前激活的菜单（优化路由匹配逻辑）
 const activeMenu = computed(() => {
-  const { meta, path } = route
-  if (meta.activeMenu) {
-    return meta.activeMenu
-  }
+  const { path } = route
+  // 确保子菜单激活时父菜单也高亮
+  if (path.startsWith('/back/book')) return '/back/book'
   return path
 })
 
@@ -209,15 +208,17 @@ $primary-gradient: linear-gradient(135deg, #4F9DFB, #77bafe 40%, #90edc6);
     transition: $transition-normal;
     width: 100% !important;
 
+    // 基础菜单项样式
     .el-menu-item,
     .el-sub-menu__title {
       height: 50px;
       line-height: 50px;
       color: $text-primary;
-      background: transparent;
+      background: transparent !important; // 重置默认背景
       transition: $transition-normal;
       margin: 4px 10px;
       border-radius: 8px;
+      position: relative; // 用于伪元素定位
 
       .el-icon {
         margin-right: 8px;
@@ -232,21 +233,45 @@ $primary-gradient: linear-gradient(135deg, #4F9DFB, #77bafe 40%, #90edc6);
         transition: $transition-normal;
       }
 
+      // hover 样式
       &:hover {
         background: rgba($primary-light, 0.5) !important;
         color: $primary-dark;
       }
+
+      &.is-active {
+        background: rgba($primary-light, 0.5) !important;
+        color: $primary-dark;
+
+        .el-icon {
+          color: $primary-dark;
+        }
+      }
     }
 
-
+    // 子菜单样式
     .el-sub-menu {
+
+      // 子菜单展开状态
       &.is-opened {
         >.el-sub-menu__title {
           color: $primary-dark;
+          // 展开时标题也加浅背景
           background: rgba($primary-light, 0.3) !important;
+        }
+
+        // 展开时子菜单标题激活态保留渐变背景
+        >.el-sub-menu__title.is-active {
+          background: rgba($primary-light, 0.5) !important;
+          color: $primary-dark;
+
+          .el-icon {
+            color: #FFFFFF !important;
+          }
         }
       }
 
+      // 子菜单列表样式
       .el-menu {
         background: $background-medium;
         padding: 5px;
@@ -254,17 +279,27 @@ $primary-gradient: linear-gradient(135deg, #4F9DFB, #77bafe 40%, #90edc6);
         margin: 0 10px;
 
         .el-menu-item {
-          background: transparent;
+          background: transparent !important;
           margin: 4px 0;
           height: 44px;
           line-height: 44px;
           border-radius: 6px;
 
+          // 子菜单hover
           &:hover {
             background: rgba($primary-light, 0.5) !important;
+            color: $primary-dark;
           }
 
+          // 子菜单激活态
+          &.is-active {
+            background: rgba($primary-light, 0.5) !important;
+            color: $primary-dark;
 
+            .el-icon {
+              color: $primary-dark;
+            }
+          }
         }
       }
     }
@@ -288,6 +323,12 @@ $primary-gradient: linear-gradient(135deg, #4F9DFB, #77bafe 40%, #90edc6);
           margin: 0 !important;
           width: auto !important;
           font-size: 18px !important;
+        }
+
+        // 折叠状态激活态
+        &.is-active {
+          background: $primary-gradient !important;
+          color: $primary-dark;
         }
       }
 
@@ -333,9 +374,8 @@ $primary-gradient: linear-gradient(135deg, #4F9DFB, #77bafe 40%, #90edc6);
     }
 
     &.is-active {
-      background: linear-gradient(120deg, $primary-color, $primary-dark) !important;
-      color: white !important;
-      box-shadow: 0 4px 10px rgba($primary-dark, 0.3);
+      background: rgba($primary-light, 0.5) !important;
+      color: $primary-dark;
     }
 
     .el-icon {

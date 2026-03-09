@@ -9,10 +9,7 @@
 
     <div class="right-menu">
       <div class="right-menu-item" @click="toggleFullScreen">
-        <!-- <el-icon :size="20">
-          <component :is="isFullscreen ? Aim : FullScreen" />
-        </el-icon>
-      </div> -->
+      </div>
 
       <el-dropdown trigger="click">
         <div class="avatar-wrapper">

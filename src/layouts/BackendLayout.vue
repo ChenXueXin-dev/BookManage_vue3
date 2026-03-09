@@ -50,8 +50,10 @@ const handleLogout = () => {
 <style lang="scss" scoped>
 .backend-layout {
   display: flex;
-  min-height: 100vh;
+  width: 100vw;
+  height: 100vh;
   background-color: #f5f7fa;
+  overflow: hidden;
 
   .sidebar-container {
     position: fixed;
@@ -61,6 +63,7 @@ const handleLogout = () => {
     z-index: 1001;
   }
 }
+
 
 .main-content {
   flex: 1;
@@ -73,7 +76,7 @@ const handleLogout = () => {
     flex: 1;
     padding: 0 20px 20px;
     overflow-y: auto;
-    background-color: #f1f4f9;
+    background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
 
     &::-webkit-scrollbar {
       width: 8px;
