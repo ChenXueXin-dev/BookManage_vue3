@@ -17,6 +17,12 @@ export const constantRoutes = [
     meta: { title: "注册", isPublic: true },
   },
   {
+    path: "/reset/passwords",
+    name: "Reset",
+    component: () => import("@/views/frontend/user/ResetPasswords.vue"),
+    meta: { title: "忘记密码", isPublic: true },
+  },
+  {
     path: "/404",
     name: "404",
     component: () => import("@/views/error/404.vue"),

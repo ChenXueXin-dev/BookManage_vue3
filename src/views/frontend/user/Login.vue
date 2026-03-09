@@ -1,60 +1,37 @@
 <template>
   <div class="login-container">
-    <div class="floating-shapes">
-      <div class="shape shape-1"></div>
-      <div class="shape shape-2"></div>
-      <div class="shape shape-3"></div>
-      <div class="shape shape-4"></div>
+    <div class="brand-content">
+      <el-icon :size="80">
+        <Reading />
+      </el-icon>
+      <h1 class="site-name">图书室借阅管理系统</h1>
     </div>
-
     <div class="login-wrapper">
-      <div class="brand-section">
-        <div class="brand-content">
-          <h1 class="site-name">图书室借阅管理系统</h1>
-          <div class="slogan-wrapper">
-            <p class="site-slogan">探索知识的海洋，发现阅读的无限可能</p>
-          </div>
-          <div class="brand-image">
-            <div class="floating-books">
-              <div class="book book-1"></div>
-              <div class="book book-2"></div>
-              <div class="book book-3"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-
       <div class="form-section">
         <div class="form-container">
           <div class="login-header">
             <h2>欢迎回来</h2>
-            <p>登录您的账号，继续您的阅读之旅</p>
+            <p>登录账号，即刻借阅</p>
           </div>
 
           <el-form :model="loginForm" :rules="rules" ref="loginFormRef" class="login-form">
             <el-form-item prop="username">
               <div class="input-wrapper">
-                <el-icon>
-                  <User />
-                </el-icon>
-                <el-input v-model="loginForm.username" placeholder="用户名" class="custom-input">
+                <el-input :prefix-icon="User" v-model="loginForm.username" placeholder="用户名" class="custom-input">
                 </el-input>
               </div>
             </el-form-item>
 
             <el-form-item prop="password">
               <div class="input-wrapper">
-                <el-icon>
-                  <Lock />
-                </el-icon>
-                <el-input v-model="loginForm.password" type="password" placeholder="密码" class="custom-input">
-                </el-input>
+                <el-input :prefix-icon="Lock" type="password" v-model="loginForm.password" placeholder="请输入密码"
+                  class="custom-input" show-password />
               </div>
             </el-form-item>
 
             <div class="action-row">
               <el-checkbox v-model="rememberMe">记住我</el-checkbox>
-              <a href="#" class="forget-link">忘记密码?</a>
+              <a href="/reset/passwords" class="forget-link">忘记密码?</a>
             </div>
 
             <el-button type="primary" :loading="loading" @click="handleLogin" class="login-button">
@@ -69,9 +46,6 @@
       </div>
     </div>
 
-    <footer class="site-footer">
-      <p>探索阅读的无限可能 | 图书室借阅管理系统 © {{ new Date().getFullYear() }}</p>
-    </footer>
   </div>
 </template>
 
@@ -80,7 +54,7 @@ import { ref, reactive } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useUserStore } from '@/store/user'
 import request from '@/utils/request'
-import { User, Lock } from '@element-plus/icons-vue'
+import { User, Lock, Reading } from '@element-plus/icons-vue'
 
 const router = useRouter()
 const route = useRoute()
@@ -138,6 +112,10 @@ const handleLogin = () => {
 </script>
 
 <style lang="scss" scoped>
+$primary-color: #4F9DFB;
+$primary-gradient: linear-gradient(135deg, #4F9DFB, #77bafe 40%, #90edc6);
+$background-dark: #CFD8DC;
+
 .login-container {
   position: relative;
   min-height: 100vh;
@@ -146,87 +124,21 @@ const handleLogin = () => {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  background: linear-gradient(135deg, #bbd8ff, #d6fff5, #cadfff);
   overflow: hidden;
-}
-
-.floating-shapes {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 1;
-  pointer-events: none;
-
-  .shape {
-    position: absolute;
-    border-radius: 50%;
-    opacity: 0.2;
-
-    &.shape-1 {
-      top: 10%;
-      left: 5%;
-      width: 250px;
-      height: 250px;
-      background: linear-gradient(120deg, #64b5f6, #5e72e4);
-      animation: float 20s infinite alternate ease-in-out;
-    }
-
-    &.shape-2 {
-      bottom: 10%;
-      right: 10%;
-      width: 350px;
-      height: 350px;
-      background: linear-gradient(120deg, #5e72e4, #b066fe);
-      animation: float 25s infinite alternate-reverse ease-in-out;
-    }
-
-    &.shape-3 {
-      top: 60%;
-      left: 15%;
-      width: 150px;
-      height: 150px;
-      background: linear-gradient(120deg, #b066fe, #64b5f6);
-      animation: float 18s infinite alternate ease-in-out 2s;
-    }
-
-    &.shape-4 {
-      top: 20%;
-      right: 20%;
-      width: 200px;
-      height: 200px;
-      background: linear-gradient(120deg, #64b5f6, #b066fe);
-      animation: float 22s infinite alternate-reverse ease-in-out 3s;
-    }
-  }
-}
-
-@keyframes float {
-  0% {
-    transform: translate(0, 0) rotate(0deg);
-  }
-
-  50% {
-    transform: translate(20px, 30px) rotate(4deg);
-  }
-
-  100% {
-    transform: translate(-20px, -15px) rotate(-4deg);
-  }
 }
 
 .login-wrapper {
   position: relative;
   z-index: 5;
-  width: 85%;
+  width: 400px;
   max-width: 1200px;
-  min-height: 600px;
+  min-height: 400px;
   display: flex;
   border-radius: 24px;
   overflow: hidden;
   background-color: rgba(255, 255, 255, 0.9);
-  box-shadow: 0 15px 50px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 15px 50px rgba(92, 92, 92, 0.1);
 }
 
 .brand-section {
@@ -264,22 +176,27 @@ const handleLogin = () => {
 }
 
 .brand-content {
-  position: relative;
-  z-index: 2;
-  text-align: center;
-  max-width: 500px;
+  display: flex;
+  align-items: cener;
+  padding: 20px;
+
+  .el-icon {
+    color: $primary-color;
+  }
+
+
+  .site-name {
+    font-size: 52px;
+    font-weight: 700;
+    margin-left: 10px;
+    letter-spacing: 2px;
+    background: $primary-gradient;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
 }
 
-.site-name {
-  font-size: 52px;
-  font-weight: 700;
-  margin-bottom: 20px;
-  letter-spacing: 2px;
-  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  background: linear-gradient(to right, #ffffff, #e0f7fa);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
+
 
 .slogan-wrapper {
   position: relative;
@@ -320,70 +237,6 @@ const handleLogin = () => {
   position: relative;
 }
 
-.floating-books {
-  position: relative;
-  height: 100%;
-
-  .book {
-    position: absolute;
-    border-radius: 4px;
-    background: rgba(255, 255, 255, 0.15);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-
-    &::before {
-      content: '';
-      position: absolute;
-      height: 80%;
-      width: 2px;
-      background: rgba(255, 255, 255, 0.3);
-      left: 15%;
-      top: 10%;
-    }
-
-    &.book-1 {
-      height: 160px;
-      width: 120px;
-      transform: rotate(-15deg);
-      left: 30%;
-      top: 10%;
-      animation: float-book 6s infinite ease-in-out;
-      background: linear-gradient(120deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.05));
-    }
-
-    &.book-2 {
-      height: 140px;
-      width: 105px;
-      transform: rotate(5deg);
-      right: 25%;
-      top: 20%;
-      animation: float-book 8s infinite ease-in-out 1s;
-      background: linear-gradient(120deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.02));
-    }
-
-    &.book-3 {
-      height: 120px;
-      width: 90px;
-      transform: rotate(20deg);
-      left: 15%;
-      bottom: 15%;
-      animation: float-book 7s infinite ease-in-out 0.5s;
-      background: linear-gradient(120deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.03));
-    }
-  }
-}
-
-@keyframes float-book {
-
-  0%,
-  100% {
-    transform: translateY(0) rotate(-15deg);
-  }
-
-  50% {
-    transform: translateY(-15px) rotate(-10deg);
-  }
-}
-
 .form-section {
   flex: 1;
   background-color: white;
@@ -400,7 +253,7 @@ const handleLogin = () => {
 }
 
 .login-header {
-  margin-bottom: 40px;
+  margin-bottom: 10px;
   text-align: center;
 
   h2 {
@@ -425,25 +278,19 @@ const handleLogin = () => {
   position: relative;
   display: flex;
   align-items: center;
-  background-color: #f5f7fa;
+  background-color: #fff !important; // 加 !important 提高优先级
+  padding: 10px;
   border-radius: 12px;
   overflow: hidden;
   transition: all 0.3s;
-  border: 2px solid transparent;
+  border: 2px solid $background-dark;
   height: 56px;
-  margin-bottom: 20px;
-
-  .el-icon {
-    padding: 0 15px;
-    font-size: 20px;
-    color: #78909c;
-  }
+  margin-bottom: 5px;
 
   &:hover,
   &:focus-within {
-    background-color: #fff;
+    background-color: #fff !important; // 强制白色
     border-color: #64b5f6;
-    box-shadow: 0 4px 12px rgba(100, 181, 246, 0.15);
 
     .el-icon {
       color: #64b5f6;
@@ -460,14 +307,20 @@ const handleLogin = () => {
     box-shadow: none !important;
     padding: 0;
     width: 100% !important;
-    background-color: transparent;
+    background-color: #fff !important; // 强制白色背景
   }
 
   .el-input__inner {
     height: 52px;
     font-size: 16px;
     width: 100% !important;
+    background-color: #fff !important; // 强制白色背景
     padding-right: 15px;
+  }
+
+  .el-input__wrapper.is-focus {
+    background-color: #fff !important;
+    box-shadow: none !important;
   }
 }
 
@@ -475,11 +328,10 @@ const handleLogin = () => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: 20px 0 30px;
   padding: 0 5px;
 
   .forget-link {
-    color: #5e72e4;
+    color: $primary-color;
     font-size: 14px;
     font-weight: 500;
     text-decoration: none;
@@ -493,20 +345,18 @@ const handleLogin = () => {
 }
 
 .login-button {
+  margin-top: 10px;
   width: 100%;
   height: 56px;
   border-radius: 12px;
   font-size: 18px;
   font-weight: 600;
-  background: linear-gradient(135deg, #64b5f6 0%, #5e72e4 100%);
+  background: $primary-gradient;
   border: none;
-  box-shadow: 0 8px 16px rgba(94, 114, 228, 0.3);
   transition: all 0.3s;
-  margin-bottom: 20px;
 
   &:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 12px 20px rgba(94, 114, 228, 0.4);
+    border: 1px solid #cadfff;
   }
 
   &:active {
@@ -524,7 +374,7 @@ const handleLogin = () => {
   }
 
   .register-link {
-    color: #5e72e4;
+    color: $primary-color;
     font-weight: 600;
     font-size: 16px;
     text-decoration: none;
