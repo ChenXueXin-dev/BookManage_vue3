@@ -2,44 +2,26 @@
   <div class="profile-container">
     <el-card class="profile-card">
       <!-- 个人信息表单 - 重新布局 -->
-      <el-form 
-        ref="profileFormRef" 
-        :model="profileForm" 
-        :rules="profileRules" 
-        label-width="100px"
-        class="profile-form"
-      >
+      <el-form ref="profileFormRef" :model="profileForm" :rules="profileRules" label-width="100px" class="profile-form">
         <div class="form-row">
           <!-- 左侧：头像区域 -->
           <div class="avatar-section">
             <div class="avatar-preview">
-              <img 
-                :src="profileForm.avatar ? ('/api' + profileForm.avatar) : defaultAvatar" 
-                alt="头像预览"
-                class="avatar-image" 
-              />
+              <img :src="profileForm.avatar ? ('/api' + profileForm.avatar) : defaultAvatar" alt="头像预览"
+                class="avatar-image" />
               <div v-if="avatarUploading" class="avatar-uploading">
                 <div class="loading-spinner"></div>
               </div>
             </div>
             <div class="avatar-upload">
-              <el-upload 
-                class="avatar-uploader" 
-                :auto-upload="true" 
-                :show-file-list="false"
-                :on-success="handleAvatarSuccess" 
-                :before-upload="beforeAvatarUpload" 
-                :on-error="handleAvatarError"
-                :http-request="customUpload" 
-                :disabled="avatarUploading"
-              >
-                <el-button type="primary"
-                plain
-                 :disabled="avatarUploading">
+              <el-upload class="avatar-uploader" :auto-upload="true" :show-file-list="false"
+                :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload" :on-error="handleAvatarError"
+                :http-request="customUpload" :disabled="avatarUploading">
+                <el-button type="primary" plain :disabled="avatarUploading">
                   {{ avatarUploading ? '上传中...' : '更换头像' }}
                 </el-button>
               </el-upload>
-              
+
               <div class="upload-tip">
                 <small>支持 jpg、png、gif 格式，文件大小不超过 2MB</small>
               </div>
@@ -57,20 +39,17 @@
               <el-input v-model="profileForm.email" placeholder="请输入邮箱" />
             </el-form-item>
 
-         
+
             <el-form-item label="密码">
-               <el-button 
-            @click="openPasswordDialog"
-            class="password-btn"
-          >
-            修改密码
-          </el-button>
+              <el-button @click="openPasswordDialog" class="password-btn">
+                修改密码
+              </el-button>
             </el-form-item>
 
             <el-form-item label="用户名">
               <el-input v-model="profileForm.username" disabled class="disabled-input" />
             </el-form-item>
-            
+
             <el-form-item label="用户角色">
               <el-input v-model="profileForm.roleType" disabled class="disabled-input" />
             </el-form-item>
@@ -92,54 +71,25 @@
     </el-card>
 
     <!-- 修改密码弹窗 -->
-    <el-dialog 
-      title="修改密码" 
-      v-model="passwordDialogVisible" 
-      width="500px"
-      :close-on-click-modal="false"
-    >
-      <el-form 
-        ref="passwordFormRef" 
-        :model="passwordForm" 
-        :rules="passwordRules" 
-        label-width="120px"
-        class="password-form"
-      >
+    <el-dialog title="修改密码" v-model="passwordDialogVisible" width="500px" :close-on-click-modal="false">
+      <el-form ref="passwordFormRef" :model="passwordForm" :rules="passwordRules" label-width="120px"
+        class="password-form">
         <el-form-item label="当前密码" prop="oldPassword">
-          <el-input 
-            v-model="passwordForm.oldPassword" 
-            type="password" 
-            placeholder="请输入当前密码" 
-            show-password 
-          />
+          <el-input v-model="passwordForm.oldPassword" type="password" placeholder="请输入当前密码" show-password />
         </el-form-item>
 
         <el-form-item label="新密码" prop="newPassword">
-          <el-input 
-            v-model="passwordForm.newPassword" 
-            type="password" 
-            placeholder="请输入新密码（至少6位）" 
-            show-password 
-          />
+          <el-input v-model="passwordForm.newPassword" type="password" placeholder="请输入新密码（至少6位）" show-password />
         </el-form-item>
 
         <el-form-item label="确认新密码" prop="confirmPassword">
-          <el-input 
-            v-model="passwordForm.confirmPassword" 
-            type="password" 
-            placeholder="请再次输入新密码" 
-            show-password 
-          />
+          <el-input v-model="passwordForm.confirmPassword" type="password" placeholder="请再次输入新密码" show-password />
         </el-form-item>
       </el-form>
 
       <template #footer>
         <el-button @click="passwordDialogVisible = false">取消</el-button>
-        <el-button 
-          type="primary" 
-          :loading="passwordLoading" 
-          @click="handleUpdatePassword"
-        >
+        <el-button type="primary" :loading="passwordLoading" @click="handleUpdatePassword">
           确认修改
         </el-button>
       </template>
@@ -557,7 +507,7 @@ $primary-color: #4F9DFB;
 
 .avatar-uploader {
   width: 100%;
-  display:flex;
+  display: flex;
   justify-content: center;
 }
 
@@ -595,22 +545,23 @@ $primary-color: #4F9DFB;
 
 .submit-section {
   margin-top: 10px;
- .button {
-  border: none;
-  background: $primary-gradient-low;
-  border-radius: 4px;
-  transition: all 0.2s ease;
-  color: #fff;
 
-  &:hover {
-    opacity: 0.9;
+  .button {
+    border: none;
+    background: $primary-gradient-low;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    color: #fff;
+
+    &:hover {
+      opacity: 0.9;
+    }
+
+    &:active {
+      opacity: 0.8;
+    }
+
   }
-
-  &:active {
-    opacity: 0.8;
-  }
-
-}
 }
 
 /* 头像上传中样式 */
@@ -639,6 +590,7 @@ $primary-color: #4F9DFB;
   0% {
     transform: rotate(0deg);
   }
+
   100% {
     transform: rotate(360deg);
   }
