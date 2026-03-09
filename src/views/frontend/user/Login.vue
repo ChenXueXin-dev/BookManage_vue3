@@ -24,7 +24,7 @@
 
             <el-form-item prop="password">
               <div class="input-wrapper">
-                <el-input :prefix-icon="Lock" type="password" v-model="loginForm.password" placeholder="请输入密码"
+                <el-input :prefix-icon="Lock" type="password" v-model="loginForm.password" placeholder="密码"
                   class="custom-input" show-password />
               </div>
             </el-form-item>
@@ -278,7 +278,7 @@ $background-dark: #CFD8DC;
   position: relative;
   display: flex;
   align-items: center;
-  background-color: #fff !important; // 加 !important 提高优先级
+  background-color: #fff !important;
   padding: 10px;
   border-radius: 12px;
   overflow: hidden;
@@ -289,7 +289,7 @@ $background-dark: #CFD8DC;
 
   &:hover,
   &:focus-within {
-    background-color: #fff !important; // 强制白色
+    background-color: #fff !important;
     border-color: #64b5f6;
 
     .el-icon {
@@ -307,14 +307,14 @@ $background-dark: #CFD8DC;
     box-shadow: none !important;
     padding: 0;
     width: 100% !important;
-    background-color: #fff !important; // 强制白色背景
+    background-color: #fff !important;
   }
 
   .el-input__inner {
     height: 52px;
     font-size: 16px;
     width: 100% !important;
-    background-color: #fff !important; // 强制白色背景
+    background-color: #fff !important;
     padding-right: 15px;
   }
 
@@ -471,10 +471,6 @@ $background-dark: #CFD8DC;
 
   .form-container {
     padding: 0;
-  }
-
-  .input-wrapper {
-    height: 52px;
   }
 
   :deep(.custom-input) {

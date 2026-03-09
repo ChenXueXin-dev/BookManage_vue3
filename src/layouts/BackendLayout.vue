@@ -28,7 +28,7 @@
 </template>
 
 <script setup>
-import { computed, ref } from 'vue'
+import { computed } from 'vue'
 import { useUserStore } from '@/store/user'
 import { useRouter, useRoute } from 'vue-router'
 import Sidebar from '@/components/backend/Sidebar.vue'
@@ -73,7 +73,7 @@ const handleLogout = () => {
     flex: 1;
     padding: 0 20px 20px;
     overflow-y: auto;
-    background-color: #f5f7fa;
+    background-color: #f1f4f9;
 
     &::-webkit-scrollbar {
       width: 8px;

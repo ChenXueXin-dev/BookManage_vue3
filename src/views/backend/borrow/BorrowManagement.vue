@@ -129,7 +129,7 @@
               续借
             </el-button>
             <el-button 
-              v-if="scope.row.status === 2" 
+              v-if="[1,2].includes(scope.row.status)" 
               type="danger" 
               link 
               @click="handleCancel(scope.row)"

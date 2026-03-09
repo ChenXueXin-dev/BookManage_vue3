@@ -1,11 +1,6 @@
 <template>
   <div class="sidebar-container">
     <div class="logo">
-      <div class="logo-icon">
-        <el-icon>
-          <component :is="'Reading'" />
-        </el-icon>
-      </div>
       <span class="logo-text">图书室借阅管理系统</span>
     </div>
     <div class="menu-wrapper">
@@ -75,14 +70,8 @@
 <script setup>
 import { computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
-import { useUserStore } from '@/store/user'
-import { useAppStore } from '@/store/app'
-import * as ElementPlusIcons from '@element-plus/icons-vue'
-import { Odometer, Reading, List, Folder, User, Document, ChatDotRound, Star, Setting } from '@element-plus/icons-vue'
 
 const route = useRoute()
-const userStore = useUserStore()
-const appStore = useAppStore()
 
 // 当前激活的菜单
 const activeMenu = computed(() => {
@@ -117,6 +106,7 @@ $border-radius: 12px;
 $box-shadow-light: 0 4px 6px rgba(0, 0, 0, 0.03);
 $box-shadow-medium: 0 6px 16px rgba(0, 0, 0, 0.06);
 $transition-normal: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+$primary-gradient: linear-gradient(135deg, #4F9DFB, #77bafe 40%, #90edc6);
 
 // 磨砂玻璃效果混入
 @mixin glass-effect {
@@ -177,26 +167,6 @@ $transition-normal: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     z-index: 2;
     @include glass-effect;
 
-    .logo-icon {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 40px;
-      height: 40px;
-      background: linear-gradient(135deg, $primary-color, $primary-dark);
-      border-radius: 10px;
-      margin-right: 12px;
-      box-shadow: 0 4px 8px rgba($primary-dark, 0.2);
-      transition: $transition-normal;
-      flex-shrink: 0;
-
-      :deep(.el-icon) {
-        font-size: 22px;
-        color: white;
-        filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
-      }
-    }
-
     .logo-text {
       color: $text-primary;
       font-size: 18px;
@@ -204,7 +174,7 @@ $transition-normal: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       white-space: nowrap;
       overflow: hidden;
       transition: $transition-normal;
-      background: linear-gradient(to right, $primary-dark, $primary-color);
+      background: linear-gradient(135deg, #4F9DFB, #77bafe 40%, #31db94);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       letter-spacing: 1px;
@@ -268,11 +238,6 @@ $transition-normal: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       }
     }
 
-    .el-menu-item.is-active {
-      background: linear-gradient(120deg, $primary-color, $primary-dark) !important;
-      color: white !important;
-      box-shadow: 0 4px 10px rgba($primary-dark, 0.3);
-    }
 
     .el-sub-menu {
       &.is-opened {
@@ -299,9 +264,7 @@ $transition-normal: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             background: rgba($primary-light, 0.5) !important;
           }
 
-          &.is-active {
-            background: linear-gradient(120deg, $primary-color, $primary-dark) !important;
-          }
+
         }
       }
     }
