@@ -26,7 +26,7 @@
             <el-icon>
               <Folder />
             </el-icon>
-            <span>分类数量</span>
+            <span>分类总数</span>
           </p>
           <h3 class="stat-value">{{ stats.categoryCount || 0 }}</h3>
         </div>

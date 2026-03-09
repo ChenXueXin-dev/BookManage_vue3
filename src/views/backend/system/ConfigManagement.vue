@@ -1,9 +1,5 @@
 <template>
   <div class="config-management-container">
-    <div class="page-header">
-      <h2 class="page-title">借阅配置管理</h2>
-    </div>
-    
     <div class="content-wrapper">
       <!-- 配置列表 -->
       <el-card class="config-list-card" shadow="hover">
@@ -13,7 +9,7 @@
             <el-button type="success" size="small" @click="refreshConfigList">刷新</el-button>
           </div>
         </template>
-        
+
         <div v-loading="loading">
           <div class="borrow-config-item" v-for="config in filteredConfigList" :key="config.configKey">
             <div class="config-header">
@@ -30,7 +26,7 @@
               </div>
             </div>
           </div>
-          
+
           <div v-if="filteredConfigList.length === 0 && !loading" class="no-config">
             <el-empty description="未找到借阅相关配置">
               <el-button type="primary" @click="createDefaultConfigs">创建默认配置</el-button>
@@ -39,27 +35,13 @@
         </div>
       </el-card>
     </div>
-    
+
     <!-- 编辑配置对话框 -->
-    <el-dialog
-      v-model="dialogVisible"
-      title="编辑借阅配置"
-      width="40%"
-      destroy-on-close
-    >
-      <el-form
-        ref="configFormRef"
-        :model="configForm"
-        :rules="configRules"
-        label-width="100px"
-      >
+    <el-dialog v-model="dialogVisible" title="编辑借阅配置" width="40%" destroy-on-close>
+      <el-form ref="configFormRef" :model="configForm" :rules="configRules" label-width="100px">
         <el-form-item label="配置值" prop="configValue">
-          <el-input-number 
-            v-model="configForm.configValue" 
-            :min="1" 
-            :max="getMaxValueByKey(configForm.configKey)"
-            controls-position="right"
-            style="width: 100%">
+          <el-input-number v-model="configForm.configValue" :min="1" :max="getMaxValueByKey(configForm.configKey)"
+            controls-position="right" style="width: 100%">
           </el-input-number>
         </el-form-item>
         <el-form-item label="描述" prop="description">
@@ -138,15 +120,15 @@ const configForm = reactive({
 const configRules = {
   configValue: [
     { required: true, message: '请输入配置值', trigger: 'blur' },
-    { 
+    {
       validator: (rule, value, callback) => {
         if (isNaN(value) || parseInt(value) <= 0) {
           callback(new Error('请输入大于0的数字'));
         } else {
           callback();
         }
-      }, 
-      trigger: 'blur' 
+      },
+      trigger: 'blur'
     }
   ]
 };
@@ -162,7 +144,7 @@ const fetchConfigList = async () => {
   try {
     const res = await request.get('/system/config/list');
     configList.value = res || [];
-    
+
     // 检查是否需要创建默认配置
     if (filteredConfigList.value.length === 0) {
       ElMessage.info('未找到借阅相关配置，可以点击创建默认配置');
@@ -201,11 +183,11 @@ const createDefaultConfigs = async () => {
         description: '最大续借次数'
       }
     ];
-    
+
     for (const config of defaultConfigs) {
       await request.post('/system/config/add', config);
     }
-    
+
     ElMessage.success('创建默认配置成功');
     await fetchConfigList();
   } catch (error) {
@@ -222,7 +204,7 @@ const handleEdit = (data) => {
   configForm.configKey = data.configKey;
   configForm.configValue = data.configValue;
   configForm.description = data.description;
-  
+
   dialogVisible.value = true;
 };
 
@@ -239,9 +221,9 @@ const submitConfigForm = () => {
         }, {
           successMsg: '编辑成功'
         });
-        
+
         dialogVisible.value = false;
-        
+
         // 刷新配置列表
         await fetchConfigList();
       } catch (error) {
@@ -261,55 +243,55 @@ const submitConfigForm = () => {
 <style lang="scss" scoped>
 .config-management-container {
   padding: 20px;
-  
+
   .page-header {
     margin-bottom: 20px;
-    
+
     .page-title {
       margin: 0;
       font-size: 20px;
       font-weight: 600;
     }
   }
-  
+
   .content-wrapper {
     .config-list-card {
       width: 100%;
-      
+
       .card-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
       }
-      
+
       .borrow-config-item {
         padding: 15px;
         margin-bottom: 15px;
         border-radius: 4px;
         background-color: #f8f8f8;
         border-left: 4px solid #409EFF;
-        
+
         .config-header {
           display: flex;
           justify-content: space-between;
           align-items: center;
           margin-bottom: 10px;
-          
+
           h3 {
             margin: 0;
             color: #303133;
           }
         }
-        
+
         .config-content {
           .config-value {
             margin-bottom: 8px;
-            
+
             .label {
               font-weight: 500;
               color: #606266;
             }
-            
+
             .value {
               font-size: 18px;
               font-weight: bold;
@@ -317,18 +299,18 @@ const submitConfigForm = () => {
               margin-left: 8px;
             }
           }
-          
+
           .config-desc {
             color: #909399;
             font-size: 14px;
           }
         }
-        
+
         &:hover {
           background-color: #f0f7ff;
         }
       }
-      
+
       .no-config {
         padding: 30px 0;
         text-align: center;

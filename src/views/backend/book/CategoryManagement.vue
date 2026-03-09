@@ -1,10 +1,9 @@
 <template>
   <div class="category-management-container">
     <div class="page-header">
-      <h2 class="page-title">图书分类管理</h2>
       <el-button type="primary" @click="showAddDialog">添加分类</el-button>
     </div>
-    
+
     <div class="content-wrapper">
       <div class="category-tree-container">
         <el-card class="tree-card" shadow="hover">
@@ -14,42 +13,19 @@
               <el-button type="success" size="small" @click="refreshCategoryTree">刷新</el-button>
             </div>
           </template>
-          <el-tree
-            ref="categoryTreeRef"
-            :data="categoryTree"
-            node-key="id"
-            :props="defaultProps"
-            default-expand-all
-            :expand-on-click-node="false"
-            highlight-current
-            @node-click="handleNodeClick"
-          >
+          <el-tree ref="categoryTreeRef" :data="categoryTree" node-key="id" :props="defaultProps" default-expand-all
+            :expand-on-click-node="false" highlight-current @node-click="handleNodeClick">
             <template #default="{ node, data }">
               <div class="custom-tree-node">
                 <span>{{ node.label }}</span>
                 <span class="tree-node-actions">
-                  <el-button
-                    type="primary"
-                    link
-                    size="small"
-                    @click.stop="handleAddChild(data)"
-                  >
+                  <el-button type="primary" link size="small" @click.stop="handleAddChild(data)">
                     添加子分类
                   </el-button>
-                  <el-button
-                    type="primary"
-                    link
-                    size="small"
-                    @click.stop="handleEdit(data)"
-                  >
+                  <el-button type="primary" link size="small" @click.stop="handleEdit(data)">
                     编辑
                   </el-button>
-                  <el-button
-                    type="danger"
-                    link
-                    size="small"
-                    @click.stop="handleDelete(node, data)"
-                  >
+                  <el-button type="danger" link size="small" @click.stop="handleDelete(node, data)">
                     删除
                   </el-button>
                 </span>
@@ -58,7 +34,7 @@
           </el-tree>
         </el-card>
       </div>
-      
+
       <div class="category-details-container" v-if="currentCategory">
         <el-card class="details-card" shadow="hover">
           <template #header>
@@ -82,7 +58,7 @@
               <span class="label">父分类:</span>
               <span class="value">{{ getParentCategoryName(currentCategory.parentId) }}</span>
             </div>
-      
+
             <div class="info-item">
               <span class="label">排序号:</span>
               <span class="value">{{ currentCategory.sort || 0 }}</span>
@@ -99,35 +75,18 @@
         </el-card>
       </div>
     </div>
-    
+
     <!-- 添加/编辑分类对话框 -->
-    <el-dialog
-      v-model="dialogVisible"
-      :title="isEdit ? '编辑分类' : addAsChild ? '添加子分类' : '添加分类'"
-      width="40%"
-      destroy-on-close
-    >
-      <el-form
-        ref="categoryFormRef"
-        :model="categoryForm"
-        :rules="categoryRules"
-        label-width="100px"
-      >
+    <el-dialog v-model="dialogVisible" :title="isEdit ? '编辑分类' : addAsChild ? '添加子分类' : '添加分类'" width="40%"
+      destroy-on-close>
+      <el-form ref="categoryFormRef" :model="categoryForm" :rules="categoryRules" label-width="100px">
         <el-form-item label="分类名称" prop="name">
           <el-input v-model="categoryForm.name" placeholder="请输入分类名称"></el-input>
         </el-form-item>
         <el-form-item label="父分类" prop="parentId">
-          <el-tree-select
-            v-model="categoryForm.parentId"
-            :data="categorySelectTree"
-            :props="defaultProps"
-            :render-after-expand="false"
-            check-strictly
-            value-key="id"
-            default-expand-all
-            placeholder="请选择父分类（不选则为顶级分类）"
-            clearable
-          ></el-tree-select>
+          <el-tree-select v-model="categoryForm.parentId" :data="categorySelectTree" :props="defaultProps"
+            :render-after-expand="false" check-strictly value-key="id" default-expand-all placeholder="请选择父分类（不选则为顶级分类）"
+            clearable></el-tree-select>
         </el-form-item>
         <el-form-item label="排序号" prop="sort">
           <el-input-number v-model="categoryForm.sort" :min="0" style="width: 100%"></el-input-number>
@@ -183,7 +142,7 @@ const categoryRules = {
     { max: 50, message: '分类名称长度不能超过50个字符', trigger: 'blur' }
   ],
   parentId: [
-    { 
+    {
       validator: (rule, value, callback) => {
         if (value) {
           // 获取父级分类
@@ -199,8 +158,8 @@ const categoryRules = {
           }
         }
         callback();
-      }, 
-      trigger: 'change' 
+      },
+      trigger: 'change'
     }
   ],
   sort: [
@@ -213,10 +172,10 @@ const categorySelectTree = computed(() => {
   if (!isEdit.value) {
     return categoryTree.value;
   }
-  
+
   // 深拷贝分类树
   const cloneData = JSON.parse(JSON.stringify(categoryTree.value));
-  
+
   // 移除当前分类及其子分类，避免循环引用
   const removeCurrentAndChildren = (tree, id) => {
     return tree.filter(node => {
@@ -229,7 +188,7 @@ const categorySelectTree = computed(() => {
       return true;
     });
   };
-  
+
   return removeCurrentAndChildren(cloneData, categoryForm.id);
 });
 
@@ -244,7 +203,7 @@ const fetchCategoryTree = async () => {
   try {
     const res = await request.get('/book/category/tree');
     categoryTree.value = res || [];
-    
+
     // 扁平化分类树，方便查找
     flatCategories.value = flattenTree(categoryTree.value);
   } catch (error) {
@@ -257,7 +216,7 @@ const fetchCategoryTree = async () => {
 // 扁平化树形结构
 const flattenTree = (tree) => {
   const result = [];
-  
+
   const flatten = (nodes) => {
     nodes.forEach(node => {
       result.push({
@@ -265,13 +224,13 @@ const flattenTree = (tree) => {
         name: node.name,
         parentId: node.parentId
       });
-      
+
       if (node.children && node.children.length > 0) {
         flatten(node.children);
       }
     });
   };
-  
+
   flatten(tree);
   return result;
 };
@@ -285,7 +244,7 @@ const refreshCategoryTree = () => {
 // 获取父分类名称
 const getParentCategoryName = (parentId) => {
   if (!parentId) return '无（顶级分类）';
-  
+
   const parent = flatCategories.value.find(item => item.id === parentId);
   return parent ? parent.name : '未知';
 };
@@ -306,15 +265,15 @@ const showAddDialog = () => {
 // 获取分类的级别
 const getCategoryLevel = (categoryId) => {
   if (!categoryId) return 1; // 顶级分类
-  
+
   const category = flatCategories.value.find(item => item.id === categoryId);
   if (!category) return 1;
-  
+
   if (!category.parentId) return 2; // 二级分类
-  
+
   const parentCategory = flatCategories.value.find(item => item.id === category.parentId);
   if (!parentCategory || !parentCategory.parentId) return 3; // 三级分类
-  
+
   return 4; // 四级分类（不应该出现）
 };
 
@@ -326,7 +285,7 @@ const handleAddChild = (data) => {
     ElMessage.warning('最多只能创建三级分类');
     return;
   }
-  
+
   isEdit.value = false;
   addAsChild.value = true;
   resetCategoryForm();
@@ -339,12 +298,12 @@ const handleEdit = (data) => {
   isEdit.value = true;
   addAsChild.value = false;
   resetCategoryForm();
-  
+
   categoryForm.id = data.id;
   categoryForm.name = data.name;
   categoryForm.parentId = data.parentId;
   categoryForm.sort = data.sort || 0;
-  
+
   dialogVisible.value = true;
 };
 
@@ -355,7 +314,7 @@ const handleDelete = (node, data) => {
     ElMessage.warning('该分类下有子分类，无法删除');
     return;
   }
-  
+
   ElMessageBox.confirm(
     `确定要删除分类"${data.name}"吗？`,
     '警告',
@@ -370,10 +329,10 @@ const handleDelete = (node, data) => {
         await request.delete(`/book/category/${data.id}`, {
           successMsg: '删除成功'
         });
-        
+
         // 刷新分类树
         await fetchCategoryTree();
-        
+
         // 如果删除的是当前选中的分类，则清空当前选中
         if (currentCategory.value && currentCategory.value.id === data.id) {
           currentCategory.value = null;
@@ -412,9 +371,9 @@ const submitCategoryForm = () => {
             successMsg: '添加成功'
           });
         }
-        
+
         dialogVisible.value = false;
-        
+
         // 刷新分类树
         await fetchCategoryTree();
       } catch (error) {
@@ -432,7 +391,7 @@ const submitCategoryForm = () => {
 // 格式化日期时间
 const formatDateTime = (datetime) => {
   if (!datetime) return '未知';
-  
+
   const date = new Date(datetime);
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -440,7 +399,7 @@ const formatDateTime = (datetime) => {
   const hours = String(date.getHours()).padStart(2, '0');
   const minutes = String(date.getMinutes()).padStart(2, '0');
   const seconds = String(date.getSeconds()).padStart(2, '0');
-  
+
   return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 };
 
@@ -450,75 +409,75 @@ const formatDateTime = (datetime) => {
 <style lang="scss" scoped>
 .category-management-container {
   padding: 20px;
-  
+
   .page-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
-    
+
     .page-title {
       margin: 0;
       font-size: 20px;
       font-weight: 600;
     }
   }
-  
+
   .content-wrapper {
     display: flex;
     gap: 20px;
-    
+
     .category-tree-container {
       width: 45%;
-      
+
       .tree-card {
         height: 100%;
-        
+
         .card-header {
           display: flex;
           justify-content: space-between;
           align-items: center;
         }
-        
+
         .custom-tree-node {
           width: 100%;
           display: flex;
           justify-content: space-between;
           align-items: center;
           padding-right: 8px;
-          
+
           .tree-node-actions {
             display: none;
           }
-          
+
           &:hover .tree-node-actions {
             display: block;
           }
         }
       }
     }
-    
+
     .category-details-container {
       width: 55%;
-      
+
       .details-card {
         .card-header {
           display: flex;
           justify-content: space-between;
           align-items: center;
         }
-        
+
         .category-info {
           .info-item {
             display: flex;
             margin-bottom: 15px;
-            
+
             .label {
               font-weight: 500;
               width: 100px;
               color: #606266;
             }
-            
+
             .value {
               flex: 1;
               color: #333;
@@ -533,11 +492,11 @@ const formatDateTime = (datetime) => {
 @media (max-width: 768px) {
   .content-wrapper {
     flex-direction: column;
-    
+
     .category-tree-container,
     .category-details-container {
       width: 100% !important;
     }
   }
 }
-</style> 
+</style>
