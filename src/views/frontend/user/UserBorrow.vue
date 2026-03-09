@@ -18,16 +18,13 @@
 
 
     <el-tabs v-model="activeTab" @tab-click="handleTabClick" class="custom-tabs">
-      <el-tab-pane label="待审核" name="pending"></el-tab-pane>
-      <el-tab-pane label="借阅中" name="borrowing"></el-tab-pane>
-      <el-tab-pane label="已归还" name="returned"></el-tab-pane>
-      <el-tab-pane label="已逾期" name="overdue"></el-tab-pane>
-      <el-tab-pane label="全部记录" name="all"></el-tab-pane>
+      <el-tab-pane v-for="item in tabList" 
+      :key="item.value"
+      :label="item.label" :name="item.value"></el-tab-pane>
     </el-tabs>
 
     <div class="borrow-list" v-loading="loading">
       <el-empty v-if="borrowList.length === 0" description="暂无借阅记录"></el-empty>
-
       <div v-else-if="sortOption === 'card'" class="borrow-cards">
         <div v-for="borrow in borrowList" :key="borrow.id" class="borrow-card">
           <div class="book-cover">
@@ -37,8 +34,8 @@
             <h3 class="book-title">{{ borrow.bookTitle }}</h3>
             <p class="book-author">作者: {{ borrow.author }}</p>
             <div class="borrow-details">
-              <p><span class="label">借阅日期:</span> {{ formatDateTime(borrow.borrowTime) }}</p>
-              <p><span class="label">应还日期:</span> {{ formatDateTime(borrow.planReturnTime) }}</p>
+              <p><span class="label">借阅日期:</span> {{ borrow.borrowTime }}</p>
+              <p><span class="label">应还日期:</span> {{ borrow.planReturnTime}}</p>
               <p v-if="borrow.status === 2">
                 <span class="label">到期倒计时:</span>
                 <span :class="getExpiryCountdownClass(borrow.planReturnTime)">
@@ -46,11 +43,11 @@
                 </span>
               </p>
               <p v-if="borrow.actualReturnTime">
-                <span class="label">实际归还:</span> {{ formatDateTime(borrow.actualReturnTime) }}
+                <span class="label">实际归还:</span> {{ borrow.actualReturnTime }}
               </p>
               <p><span class="label">续借次数:</span> {{ borrow.renewCount }} 次</p>
               <p><span class="label">状态:</span> <span :class="'status-' + getStatusClass(borrow.status)">{{
-                getStatusText(borrow.status) }}</span></p>
+                borrow.statusText }}</span></p>
             </div>
             <div v-if="borrow.status === 1" class="borrow-tip">
               <el-alert title="借阅申请正在审核中，请耐心等待" type="info" :closable="false" show-icon />
@@ -86,13 +83,31 @@
       <div v-else-if="sortOption === 'table' && borrowList.length > 0" class="borrow-history">
         <el-table :data="borrowList" style="width: 100%">
           <el-table-column prop="bookTitle" label="图书名称" />
-          <el-table-column prop="borrowTime" label="借阅日期" />
-          <el-table-column prop="returnTime" label="归还日期" />
+          <el-table-column prop="borrowTime"  label="借阅日期" />
+          <el-table-column prop="actualReturnTime" v-if="activeTab == 'returned' " label="实际归还日期" />
+          <el-table-column prop="planReturnTime" v-else label="应还日期" />
           <el-table-column prop="status" label="状态">
             <template #default="scope">
-              <el-tag :type="scope.row.status === '已归还' ? 'success' : 'warning'">
-                  {{ getStatusText(scope.row.status) }}
+              <el-tag :type="scope.row.status === 3 ? 'success' : 'warning'">
+                  {{ scope.row.statusText }}
                 </el-tag>
+            </template>
+          </el-table-column>
+          <el-table-column prop="action" label="操作" max-width="80">
+            <template #default="scope">
+              <el-button v-if="scope.row.status === 1" type="danger" class="cancel-btn" @click="handleCancel(scope.row.status)">
+                取消申请
+              </el-button>
+              <el-button v-if="scope.row.status === 2" type="primary" class="return-btn" @click="handleReturn(scope.row.status)">
+                归还图书
+              </el-button>
+              <el-button v-if="scope.row.status === 2 && scope.row.renewCount < maxRenewCount" type="success"
+                class="renew-btn" @click="handleRenew(scope.row.status)">
+                续借
+              </el-button>
+              <el-button v-if="scope.row.status === 4" type="warning" class="overdue-btn" @click="handleReturn(scope.row.status)">
+                立即归还
+              </el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -151,7 +166,9 @@ const fetchBorrowRecords = async () => {
       ...item,
       bookTitle: item.bookTitle || '未知书名',
       borrowTime: formatDate(item.borrowTime) || '',
-      returnTime: formatDate(item.actualReturnTime) || '',
+      actualReturnTime: formatDate(item.actualReturnTime) || '',
+      planReturnTime: formatDate(item.planReturnTime) || '',
+      statusText:getStatusText(item.status)
     })) || []
     total.value = res.total || 0
   } catch (error) {
@@ -181,21 +198,6 @@ const formatDate = (dateString) => {
     return dateString; // 出错时返回原字符串
   }
 };
-
-// 获取借阅状态文本
-const getBorrowStatusText = (status) => {
-  switch (status) {
-    // 0:已取消,1:待审核,2:借阅中,3:已归还,4:已逾期,5:审核拒绝
-    case 0: return '已取消';
-    case 1: return '待审核';
-    case 2: return '借阅中';
-    case 3: return '已归还';
-    case 4: return '已逾期';
-    case 5: return '审核拒绝';
-    default: return '未知状态';
-  }
-};
-
 
 // 获取系统配置
 const fetchSystemConfig = async () => {
@@ -233,6 +235,14 @@ const getStatusByTab = () => {
       return undefined
   }
 }
+
+const tabList = [
+  {label:'待审核',value:'pending'},
+  {label:'借阅中',value:'borrowing'},
+  {label:'已归还',value:'returned'},
+  {label:'已逾期',value:'overdue'},
+  {label:'全部记录',value:'all'},
+]
 
 // 处理标签页点击
 const handleTabClick = () => {
@@ -447,6 +457,9 @@ $text-secondary: #607D8B;
 $primary-color: #4F9DFB;
 $text-primary: #37474F;
 $nav-gradient: linear-gradient(135deg, #f2fffa, #409EFF, #f2fffa);
+$primary-gradient: linear-gradient(135deg, #4F9DFB, #77bafe 40%, #90edc6);
+$primary-gradient-red-orange: linear-gradient(135deg, #f98a6c, #fdd888);
+$primary-gradient-purple-pink: linear-gradient(135deg, #a88bf0, #c89ef5 40%, #f8b8e8);
 $warning-color: #FFA726;
 $transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 $box-shadow-heavy: 0 12px 24px rgba(0, 0, 0, 0.12);
@@ -455,7 +468,7 @@ $box-shadow-heavy: 0 12px 24px rgba(0, 0, 0, 0.12);
   max-width: 1200px;
   margin: 0 auto;
   padding: 25px;
-  background: linear-gradient(135deg, #f5efff 0%, #e0eeff 100%);
+  background: #fff;
   box-shadow: $box-shadow-heavy;
   min-height: 100vh;
 }
@@ -638,7 +651,7 @@ $box-shadow-heavy: 0 12px 24px rgba(0, 0, 0, 0.12);
   background-color: #fff;
   border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
   transition: transform 0.3s, box-shadow 0.3s;
 
   &:hover {
@@ -659,7 +672,7 @@ $box-shadow-heavy: 0 12px 24px rgba(0, 0, 0, 0.12);
   margin: 20px;
   border-radius: 8px;
   overflow: hidden;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 
   img {
     width: 100%;
@@ -754,7 +767,7 @@ $box-shadow-heavy: 0 12px 24px rgba(0, 0, 0, 0.12);
 }
 
 .return-btn {
-  background: $nav-gradient;
+  background: $primary-gradient;
   border: none;
   padding: 8px 16px;
   font-size: 14px;
@@ -766,7 +779,7 @@ $box-shadow-heavy: 0 12px 24px rgba(0, 0, 0, 0.12);
   &:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 15px rgba(83, 82, 237, 0.3);
-    background: $nav-gradient;
+    background: $primary-gradient;
   }
 
   &:active {
@@ -775,7 +788,7 @@ $box-shadow-heavy: 0 12px 24px rgba(0, 0, 0, 0.12);
 }
 
 .renew-btn {
-  background: linear-gradient(135deg, #67C23A 0%, #4CAF50 100%);
+  background: $primary-gradient-purple-pink;
   border: none;
   padding: 8px 16px;
   font-size: 14px;
@@ -796,9 +809,8 @@ $box-shadow-heavy: 0 12px 24px rgba(0, 0, 0, 0.12);
 }
 
 .cancel-btn {
-  background: linear-gradient(135deg, #F56C6C 0%, #e64a19 100%);
+  background: $primary-gradient-red-orange;
   border: none;
-  padding: 8px 16px;
   font-size: 14px;
   font-weight: 600;
   border-radius: 8px;
