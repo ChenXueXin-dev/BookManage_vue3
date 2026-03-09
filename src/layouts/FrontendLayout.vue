@@ -34,7 +34,7 @@
               class="notification-badge">
               <el-popover placement="bottom" :width="320" trigger="click" @show="loadAllNotifications">
                 <template #reference>
-                  <el-button class="notification-btn" :type="allNotifications.length > 0 ? 'danger' : 'primary'" circle>
+                  <el-button class="notification-btn" :type="allNotifications.length > 0 ? 'primary' : 'info'" circle>
                     <el-icon>
                       <el-icon>
                         <BellFilled />
