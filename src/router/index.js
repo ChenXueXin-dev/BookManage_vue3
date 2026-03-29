@@ -180,10 +180,28 @@ const backendRoutes = [
         meta: { title: "评论管理", requiresAuth: true, roles: ["ADMIN"] },
       },
       {
+        path: "notice/management",
+        name: "NoticeManagement",
+        component: () => import("@/views/backend/notice/NoticeManagement.vue"),
+        meta: { title: "通知公告", requiresAuth: true, roles: ["ADMIN"] },
+      },
+      {
+        path: "active/management",
+        name: "ActiveManagement",
+        component: () => import("@/views/backend/active/ActiveManagement.vue"),
+        meta: { title: "活动公告", requiresAuth: true, roles: ["ADMIN"] },
+      },
+      {
         path: "system/config",
         name: "ConfigManagement",
         component: () => import("@/views/backend/system/ConfigManagement.vue"),
         meta: { title: "系统配置", requiresAuth: true, roles: ["ADMIN"] },
+      },
+      {
+        path: "ai/recommendation",
+        name: "AiRecommendation",
+        component: () => import("@/views/backend/recommendation/AiRecommendation.vue"),
+        meta: { title: "图书推荐", requiresAuth: true, roles: ["ADMIN"] },
       },
     ],
   },

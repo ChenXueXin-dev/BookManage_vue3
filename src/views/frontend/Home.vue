@@ -12,7 +12,21 @@
             <h2>通知公告</h2>
           </div>
           <div class="view-all">
+           <div class="notice-list" v-loading="noticeLoading">
+            <div v-if="noticeList.length === 0" class="empty-notice">
+              <el-empty description="暂无通知公告" :image-size="60" />
+            </div>
+            <div v-else class="notice-item" v-for="notice in noticeList" :key="notice.id" @click="showNoticeDetail(notice)">
+              <div class="notice-title">
+                <el-tag type="danger" size="small" effect="dark" class="notice-tag">公告</el-tag>
+                <span class="title-text">{{ notice.title }}</span>
+              </div>
+              <div class="notice-date">{{ formatDate(notice.publishDate) }}</div>
+            </div>
           </div>
+
+          </div>
+
         </div>
 
         <!-- 活动公共卡片 -->
@@ -21,7 +35,44 @@
             <h2>活动公告</h2>
           </div>
           <div class="view-all">
+            <div class="date-filter">
+              <el-date-picker
+                v-model="activeStartDate"
+                type="date"
+                placeholder="起始日期"
+                format="YYYY-MM-DD"
+                value-format="YYYY-MM-DD"
+                size="small"
+                style="width: 130px"
+                @change="handleActiveSearch"
+              />
+              <span class="date-separator">至</span>
+              <el-date-picker
+                v-model="activeEndDate"
+                type="date"
+                placeholder="结束日期"
+                format="YYYY-MM-DD"
+                value-format="YYYY-MM-DD"
+                size="small"
+                style="width: 130px"
+                @change="handleActiveSearch"
+              />
+              <el-button size="small" @click="resetActiveSearch" style="margin-left: 10px">重置</el-button>
+            </div>
+                      <div class="notice-list" v-loading="activeLoading">
+            <div v-if="activeList.length === 0" class="empty-notice">
+              <el-empty description="暂无活动公告" :image-size="60" />
+            </div>
+            <div v-else class="notice-item" v-for="active in activeList" :key="active.id" @click="showActiveDetail(active)">
+              <div class="notice-title">
+                <el-tag type="success" size="small" effect="dark" class="notice-tag">活动</el-tag>
+                <span class="title-text">{{ active.title }}</span>
+              </div>
+              <div class="notice-date">{{ formatDate(active.startTime) }}</div>
+            </div>
           </div>
+          </div>
+
         </div>
 
         <!-- 统计数据卡片 -->
@@ -437,7 +488,7 @@ import {
   Discount,
   Top,
 } from "@element-plus/icons-vue";
-import { ElMessage } from "element-plus";
+import { ElMessage, ElMessageBox } from "element-plus";
 import request from "@/utils/request";
 
 const router = useRouter();
@@ -485,6 +536,96 @@ const fetchStats = async () => {
       userCount: 128
     }
   }
+}
+
+// 通知公告数据
+const noticeList = ref([])
+const noticeLoading = ref(false)
+const activeList = ref([])
+const activeLoading = ref(false)
+const activeStartDate = ref('')
+const activeEndDate = ref('')
+
+// 获取通知公告
+const fetchNoticeList = async () => {
+  noticeLoading.value = true
+  try {
+    const res = await request.get('/notice/list', { currentPage: 1, size: 20, status: 1 }, { showDefaultMsg: false })
+    noticeList.value = res.data?.records || res.records || []
+  } catch (error) {
+    console.error('获取通知公告失败:', error)
+  } finally {
+    noticeLoading.value = false
+  }
+}
+
+// 获取活动公告
+const fetchActiveList = async (startTime = null, endTime = null) => {
+  activeLoading.value = true
+  try {
+    const params = { currentPage: 1, size: 20, status: 1 }
+    if (startTime) {
+      params.startTime = startTime + ' 00:00:00'
+    }
+    if (endTime) {
+      params.endTime = endTime + ' 23:59:59'
+    }
+    const res = await request.get('/active/list', params, { showDefaultMsg: false })
+    activeList.value = res.data?.records || res.records || []
+  } catch (error) {
+    console.error('获取活动公告失败:', error)
+  } finally {
+    activeLoading.value = false
+  }
+}
+
+// 活动公告日期搜索
+const handleActiveSearch = () => {
+  fetchActiveList(activeStartDate.value, activeEndDate.value)
+}
+
+// 重置活动公告搜索
+const resetActiveSearch = () => {
+  activeStartDate.value = ''
+  activeEndDate.value = ''
+  fetchActiveList()
+}
+
+// 显示通知详情
+const showNoticeDetail = (notice) => {
+  ElMessageBox.alert(notice.content || '暂无内容', notice.title, {
+    confirmButtonText: '确定',
+    customClass: 'notice-detail-dialog'
+  })
+}
+
+// 显示活动详情
+const showActiveDetail = (active) => {
+  const content = `
+    <div style="line-height: 2;">
+      <p><strong>活动时间：</strong>${formatDateTime(active.startTime)} 至 ${formatDateTime(active.endTime)}</p>
+      <p><strong>活动内容：</strong></p>
+      <p>${active.content || '暂无内容'}</p>
+    </div>
+  `
+  ElMessageBox.alert(content, active.title, {
+    confirmButtonText: '确定',
+    dangerouslyUseHTMLString: true,
+    customClass: 'notice-detail-dialog'
+  })
+}
+
+// 格式化日期时间
+const formatDateTime = (dateString) => {
+  if (!dateString) return ''
+  const date = new Date(dateString)
+  return `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')} ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`
+}
+
+// 格式化日期
+const formatDate = (date) => {
+  if (!date) return ''
+  return new Date(date).toLocaleDateString('zh-CN')
 }
 
 // 分类数据
@@ -622,6 +763,8 @@ onMounted(() => {
   fetchCategories();
   fetchHotBooks();
   fetchRecommendations();
+  fetchNoticeList();
+  fetchActiveList();
 
   window.addEventListener('scroll', handleScroll);
 });
@@ -708,13 +851,6 @@ const fetchTopRatedBooks = async () => {
   } finally {
     topRatedLoading.value = false;
   }
-};
-
-// 日期格式化
-const formatDate = (dateString) => {
-  if (!dateString) return '';
-  const date = new Date(dateString);
-  return `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
 };
 
 </script>
@@ -804,7 +940,73 @@ $transition-slow: all 0.5s ease;
       border-radius: $border-radius;
       box-shadow: $box-shadow-light;
       transition: $transition-normal;
-      overflow: hidden;
+      padding: 15px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .notice-list {
+      flex: 1;
+      min-height: 0;
+      margin-top: 15px;
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: $border-radius;
+      box-shadow: $box-shadow-light;
+      padding: 15px;
+      overflow-y: auto;
+      overflow-x: hidden;
+
+      .empty-notice {
+        padding: 20px;
+      }
+
+      .notice-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 15px;
+        border-bottom: 1px solid #f0f0f0;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        overflow-y: auto;
+
+        &:hover {
+          background: #f5f7fa;
+        }
+
+        &:last-child {
+          border-bottom: none;
+        }
+
+        .notice-title {
+          display: flex;
+          align-items: center;
+          flex: 1;
+          overflow: hidden;
+
+          .notice-tag {
+            margin-right: 10px;
+            flex-shrink: 0;
+          }
+
+          .title-text {
+            font-size: 14px;
+            color: #333;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+          }
+        }
+
+        .notice-date {
+          font-size: 12px;
+          color: #999;
+          margin-left: 15px;
+          flex-shrink: 0;
+        }
+      }
     }
   }
 
@@ -820,7 +1022,93 @@ $transition-slow: all 0.5s ease;
       border-radius: $border-radius;
       box-shadow: $box-shadow-light;
       transition: $transition-normal;
-      overflow: hidden;
+      padding: 15px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .date-filter {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 15px;
+      flex-shrink: 0;
+
+      .filter-label {
+        font-size: 14px;
+        color: #606266;
+        font-weight: 500;
+      }
+
+      .date-separator {
+        font-size: 14px;
+        color: #909399;
+        margin: 0 5px;
+      }
+    }
+
+    .notice-list {
+      flex: 1;
+      min-height: 0;
+      margin-top: 15px;
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: $border-radius;
+      box-shadow: $box-shadow-light;
+      padding: 15px;
+      overflow-y: auto;
+      overflow-x: hidden;
+
+      .empty-notice {
+        padding: 20px;
+      }
+
+      .notice-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 15px;
+        border-bottom: 1px solid #f0f0f0;
+        cursor: pointer;
+        transition: all 0.3s ease;
+
+        &:hover {
+          background: #f5f7fa;
+        }
+
+        &:last-child {
+          border-bottom: none;
+        }
+
+        .notice-title {
+          display: flex;
+          align-items: center;
+          flex: 1;
+          overflow: hidden;
+
+          .notice-tag {
+            margin-right: 10px;
+            flex-shrink: 0;
+          }
+
+          .title-text {
+            font-size: 14px;
+            color: #333;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+          }
+        }
+
+        .notice-date {
+          font-size: 12px;
+          color: #999;
+          margin-left: 15px;
+          flex-shrink: 0;
+        }
+      }
     }
 
   }

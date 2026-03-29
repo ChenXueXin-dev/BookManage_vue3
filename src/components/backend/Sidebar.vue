@@ -49,11 +49,32 @@
           <template #title>评论管理</template>
         </el-menu-item>
 
+        <el-menu-item index="/back/notice/management">
+          <el-icon>
+            <component :is="'Bell'" />
+          </el-icon>
+          <template #title>通知公告</template>
+        </el-menu-item>
+
+        <el-menu-item index="/back/active/management">
+          <el-icon>
+            <component :is="'Calendar'" />
+          </el-icon>
+          <template #title>活动公告</template>
+        </el-menu-item>
+
         <el-menu-item index="/back/user-management">
           <el-icon>
             <component :is="'User'" />
           </el-icon>
           <template #title>用户管理</template>
+        </el-menu-item>
+
+        <el-menu-item index="/back/ai/recommendation">
+          <el-icon>
+            <component :is="'MagicStick'" />
+          </el-icon>
+          <template #title>图书推荐</template>
         </el-menu-item>
 
         <el-menu-item index="/back/system/config">

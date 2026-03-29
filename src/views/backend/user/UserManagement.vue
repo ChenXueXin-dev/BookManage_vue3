@@ -447,8 +447,12 @@ const handleDelete = (row) => {
           ElMessage.error('删除用户失败');
         }
       });
-    } catch (error) { }
-  }).catch(() => { });
+    } catch (error) {
+      console.error('操作失败:', error);
+    }
+  }).catch(() => {
+    console.log('用户取消操作');
+  });
 };
 
 // 处理批量删除
@@ -477,8 +481,12 @@ const handleBatchDelete = () => {
           ElMessage.error('批量删除用户失败');
         }
       });
-    } catch (error) { }
-  }).catch(() => { });
+    } catch (error) {
+      console.error('操作失败:', error);
+    }
+  }).catch(() => {
+    console.log('用户取消操作');
+  });
 };
 
 // 提交用户表单
@@ -519,7 +527,9 @@ const submitUserForm = async () => {
           }
         });
       }
-    } catch (error) { }
+    } catch (error) {
+      console.error('操作失败:', error);
+    }
   });
 };
 
@@ -554,7 +564,9 @@ const submitResetPassword = async () => {
           ElMessage.error(error.message || '重置密码失败');
         }
       });
-    } catch (error) { }
+    } catch (error) {
+      console.error('操作失败:', error);
+    }
   });
 };
 

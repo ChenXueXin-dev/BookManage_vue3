@@ -195,6 +195,7 @@
         </div>
       </div>
     </el-footer>
+    <AiFloatButton />
   </el-container>
 </template>
 
@@ -202,6 +203,7 @@
 import { computed, onMounted } from 'vue'
 import { useUserStore } from '@/store/user'
 import { useRouter } from 'vue-router'
+import AiFloatButton from '@/components/AiFloatButton.vue'
 import {
   Reading,
   HomeFilled,
