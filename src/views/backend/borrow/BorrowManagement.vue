@@ -45,7 +45,7 @@
         <el-table v-loading="loading" :data="borrowList" border stripe style="width: 100%">
           <el-table-column type="index" width="50" label="#" />
           <el-table-column prop="id" label="借阅ID" width="80" />
-          <el-table-column label="图书信息" min-width="200">
+          <el-table-column label="图书信息" min-width="150">
             <template #default="scope">
               <div class="book-info">
                 <el-image :src="scope.row.coverUrl ? ('/api' + scope.row.coverUrl) : defaultCover"

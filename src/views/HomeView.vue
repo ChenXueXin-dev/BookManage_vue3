@@ -19,31 +19,22 @@
     <div class="todo-section">
       <h2>待办事项示例</h2>
       <div class="add-todo">
-        <el-input 
-          v-model="newTodo" 
-          placeholder="输入待办事项" 
-          @keyup.enter="addTodo"
-          style="width: 300px"
-        >
+        <el-input v-model="newTodo" placeholder="输入待办事项" @keyup.enter="addTodo" style="width: 300px">
           <template #append>
-            <el-button @click="addTodo">添加</el-button>
+            <el-button @click="addTodo">新增</el-button>
           </template>
         </el-input>
       </div>
 
       <el-empty v-if="!todos.length" description="暂无待办事项" />
-      
+
       <el-card v-else class="todo-list">
         <template v-for="todo in todos" :key="todo.id">
           <div class="todo-item">
             <el-checkbox v-model="todo.completed">
               <span :class="{ completed: todo.completed }">{{ todo.text }}</span>
             </el-checkbox>
-            <el-button 
-              type="danger" 
-              size="small" 
-              @click="removeTodo(todo.id)"
-            >
+            <el-button type="danger" size="small" @click="removeTodo(todo.id)">
               删除
             </el-button>
           </div>
@@ -56,39 +47,30 @@
       <template #header>
         <h3>基础表单组件</h3>
       </template>
-      
+
       <el-form :model="form" :rules="rules" ref="formRef" label-width="100px">
         <el-form-item label="输入框" prop="input">
           <el-input v-model="form.input" placeholder="请输入内容" />
         </el-form-item>
-        
+
         <el-form-item label="选择器" prop="select">
           <el-select v-model="form.select" placeholder="请选择">
-            <el-option
-              v-for="item in options"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            />
+            <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" />
           </el-select>
         </el-form-item>
-        
+
         <el-form-item label="日期时间" prop="datetime">
-          <el-date-picker
-            v-model="form.datetime"
-            type="datetime"
-            placeholder="选择日期时间"
-          />
+          <el-date-picker v-model="form.datetime" type="datetime" placeholder="选择日期时间" />
         </el-form-item>
-        
+
         <el-form-item label="开关" prop="switch">
           <el-switch v-model="form.switch" />
         </el-form-item>
-        
+
         <el-form-item label="滑块" prop="slider">
           <el-slider v-model="form.slider" />
         </el-form-item>
-        
+
         <el-form-item label="单选框" prop="radio">
           <el-radio-group v-model="form.radio">
             <el-radio :label="1">选项1</el-radio>
@@ -96,7 +78,7 @@
             <el-radio :label="3">选项3</el-radio>
           </el-radio-group>
         </el-form-item>
-        
+
         <el-form-item label="多选框" prop="checkbox">
           <el-checkbox-group v-model="form.checkbox">
             <el-checkbox label="选项1" />
@@ -104,7 +86,7 @@
             <el-checkbox label="选项3" />
           </el-checkbox-group>
         </el-form-item>
-        
+
         <el-form-item>
           <el-button type="primary" @click="submitForm">提交</el-button>
           <el-button @click="resetForm">重置</el-button>
@@ -120,24 +102,17 @@
           <el-button type="primary" @click="addRow">添加行</el-button>
         </div>
       </template>
-      
+
       <el-table :data="tableData" border style="width: 100%">
         <el-table-column prop="date" label="日期" width="180" />
         <el-table-column prop="name" label="姓名" width="180" />
         <el-table-column prop="address" label="地址" />
         <el-table-column label="操作" width="150">
           <template #default="scope">
-            <el-button 
-              size="small" 
-              @click="handleEdit(scope.$index, scope.row)"
-            >
-              编辑
+            <el-button size="small" @click="handleEdit(scope.$index, scope.row)">
+              修改
             </el-button>
-            <el-button
-              size="small"
-              type="danger"
-              @click="handleDelete(scope.$index, scope.row)"
-            >
+            <el-button size="small" type="danger" @click="handleDelete(scope.$index, scope.row)">
               删除
             </el-button>
           </template>
@@ -150,7 +125,7 @@
       <template #header>
         <h3>对话框和消息提示</h3>
       </template>
-      
+
       <el-space wrap>
         <el-button @click="dialogVisible = true">打开对话框</el-button>
         <el-button @click="showMessage('success')">成功消息</el-button>
@@ -161,11 +136,7 @@
     </el-card>
 
     <!-- 对话框 -->
-    <el-dialog
-      v-model="dialogVisible"
-      title="对话框"
-      width="30%"
-    >
+    <el-dialog v-model="dialogVisible" title="对话框" width="30%">
       <span>这是一个对话框的内容</span>
       <template #footer>
         <span class="dialog-footer">
@@ -206,7 +177,7 @@ const addTodo = () => {
     ElMessage.warning('请输入待办事项内容')
     return
   }
-  
+
   todos.value.push({
     id: Date.now(),
     text: newTodo.value,
@@ -280,7 +251,7 @@ const tableData = ref([
 ])
 
 const handleEdit = (index, row) => {
-  ElMessageBox.alert(`编辑第 ${index + 1} 行: ${row.name}`, '编辑')
+  ElMessageBox.alert(`修改第 ${index + 1} 行: ${row.name}`, '修改')
 }
 
 const handleDelete = (index, row) => {

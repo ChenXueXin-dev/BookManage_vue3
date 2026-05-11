@@ -200,7 +200,8 @@ const backendRoutes = [
       {
         path: "ai/recommendation",
         name: "AiRecommendation",
-        component: () => import("@/views/backend/recommendation/AiRecommendation.vue"),
+        component: () =>
+          import("@/views/backend/recommendation/AiRecommendation.vue"),
         meta: { title: "图书推荐", requiresAuth: true, roles: ["ADMIN"] },
       },
     ],
@@ -251,6 +252,7 @@ router.beforeEach((to, from, next) => {
 
   // 检查角色权限
   if (to.meta.roles && to.meta.roles.length > 0) {
+    console.log;
     const hasRole = to.meta.roles.includes(userStore.roleType);
     if (!hasRole) {
       console.log("无权限，" + userStore.roleType);

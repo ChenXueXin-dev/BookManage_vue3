@@ -59,7 +59,7 @@
       </div>
     </div>
 
-    <!-- 编辑配置对话框 -->
+    <!-- 修改配置对话框 -->
     <el-dialog v-model="dialogVisible" title="修改配置值" width="500px" destroy-on-close>
       <el-form ref="configFormRef" :model="configForm" :rules="configRules" label-width="100px" class="config-form">
         <div class="form-header">
@@ -238,7 +238,7 @@ const createDefaultConfigs = async () => {
   }
 };
 
-// 处理编辑配置
+// 处理修改配置
 const handleEdit = (data) => {
   configForm.id = data.id;
   configForm.configKey = data.configKey;
@@ -254,12 +254,12 @@ const submitConfigForm = () => {
     if (valid) {
       submitLoading.value = true;
       try {
-        // 编辑配置
+        // 修改配置
         await request.put(`/system/config/${configForm.configKey}`, {
           ...configForm,
           configValue: String(configForm.configValue) // 转换为字符串
         }, {
-          successMsg: '编辑成功'
+          successMsg: '修改成功'
         });
 
         dialogVisible.value = false;

@@ -2,19 +2,16 @@
   <div class="ai-float-button" @click="openDialog">
     <el-badge :value="unreadCount" :hidden="unreadCount === 0" :max="99">
       <div class="float-icon">
-        <el-icon :size="24"><MagicStick /></el-icon>
+        <el-icon :size="24">
+          <MagicStick />
+        </el-icon>
       </div>
     </el-badge>
     <span class="float-text">AI推荐</span>
   </div>
 
-  <el-dialog
-    v-model="dialogVisible"
-    title="AI智能图书推荐"
-    width="700px"
-    :close-on-click-modal="false"
-    class="ai-recommend-dialog"
-  >
+  <el-dialog v-model="dialogVisible" title="AI智能图书推荐" width="700px" :close-on-click-modal="false"
+    class="ai-recommend-dialog">
     <div class="ai-content" v-loading="loading">
       <div v-if="!isLoggedIn" class="login-prompt">
         <el-empty description="请先登录以获取个性化推荐">
@@ -25,7 +22,9 @@
       <div v-else-if="aiSummary" class="recommend-result">
         <div class="ai-summary">
           <div class="summary-header">
-            <el-icon class="ai-icon"><Cpu /></el-icon>
+            <el-icon class="ai-icon">
+              <Cpu />
+            </el-icon>
             <span>AI分析</span>
           </div>
           <div class="summary-content">{{ aiSummary }}</div>
@@ -37,12 +36,8 @@
             <el-tag type="success" size="small">共{{ recommendations.length }}本</el-tag>
           </div>
           <div class="book-items">
-            <div
-              v-for="(book, index) in recommendations"
-              :key="book.bookId"
-              class="book-item"
-              @click="goBookDetail(book.bookId)"
-            >
+            <div v-for="(book, index) in recommendations" :key="book.bookId" class="book-item"
+              @click="goBookDetail(book.bookId)">
               <div class="book-rank">{{ index + 1 }}</div>
               <div class="book-cover">
                 <img :src="book.coverUrl ? ('/api' + book.coverUrl) : defaultCover" :alt="book.title" />
@@ -56,12 +51,8 @@
                 </div>
               </div>
               <div class="recommend-score">
-                <el-progress
-                  type="circle"
-                  :width="50"
-                  :percentage="Math.round(book.recommendationScore * 10)"
-                  :stroke-width="4"
-                />
+                <el-progress type="circle" :width="50" :percentage="Math.round(book.recommendationScore * 10)"
+                  :stroke-width="4" />
               </div>
             </div>
           </div>
@@ -137,7 +128,7 @@ const goLogin = () => {
 
 const goBookDetail = (bookId) => {
   dialogVisible.value = false
-  router.push(`/book/${bookId}`)
+  router.push(`/book/detail/${bookId}`)
 }
 
 onMounted(() => {

@@ -12,18 +12,19 @@
             <h2>通知公告</h2>
           </div>
           <div class="view-all">
-           <div class="notice-list" v-loading="noticeLoading">
-            <div v-if="noticeList.length === 0" class="empty-notice">
-              <el-empty description="暂无通知公告" :image-size="60" />
-            </div>
-            <div v-else class="notice-item" v-for="notice in noticeList" :key="notice.id" @click="showNoticeDetail(notice)">
-              <div class="notice-title">
-                <el-tag type="danger" size="small" effect="dark" class="notice-tag">公告</el-tag>
-                <span class="title-text">{{ notice.title }}</span>
+            <div class="notice-list" v-loading="noticeLoading">
+              <div v-if="noticeList.length === 0" class="empty-notice">
+                <el-empty description="暂无通知公告" :image-size="60" />
               </div>
-              <div class="notice-date">{{ formatDate(notice.publishDate) }}</div>
+              <div v-else class="notice-item" v-for="notice in noticeList" :key="notice.id"
+                @click="showNoticeDetail(notice)">
+                <div class="notice-title">
+                  <el-tag type="danger" size="small" effect="dark" class="notice-tag">公告</el-tag>
+                  <span class="title-text">{{ notice.title }}</span>
+                </div>
+                <div class="notice-date">{{ formatDate(notice.publishDate) }}</div>
+              </div>
             </div>
-          </div>
 
           </div>
 
@@ -36,41 +37,26 @@
           </div>
           <div class="view-all">
             <div class="date-filter">
-              <el-date-picker
-                v-model="activeStartDate"
-                type="date"
-                placeholder="起始日期"
-                format="YYYY-MM-DD"
-                value-format="YYYY-MM-DD"
-                size="small"
-                style="width: 130px"
-                @change="handleActiveSearch"
-              />
+              <el-date-picker v-model="activeStartDate" type="date" placeholder="起始日期" format="YYYY-MM-DD"
+                value-format="YYYY-MM-DD" size="small" style="width: 130px" @change="handleActiveSearch" />
               <span class="date-separator">至</span>
-              <el-date-picker
-                v-model="activeEndDate"
-                type="date"
-                placeholder="结束日期"
-                format="YYYY-MM-DD"
-                value-format="YYYY-MM-DD"
-                size="small"
-                style="width: 130px"
-                @change="handleActiveSearch"
-              />
+              <el-date-picker v-model="activeEndDate" type="date" placeholder="结束日期" format="YYYY-MM-DD"
+                value-format="YYYY-MM-DD" size="small" style="width: 130px" @change="handleActiveSearch" />
               <el-button size="small" @click="resetActiveSearch" style="margin-left: 10px">重置</el-button>
             </div>
-                      <div class="notice-list" v-loading="activeLoading">
-            <div v-if="activeList.length === 0" class="empty-notice">
-              <el-empty description="暂无活动公告" :image-size="60" />
-            </div>
-            <div v-else class="notice-item" v-for="active in activeList" :key="active.id" @click="showActiveDetail(active)">
-              <div class="notice-title">
-                <el-tag type="success" size="small" effect="dark" class="notice-tag">活动</el-tag>
-                <span class="title-text">{{ active.title }}</span>
+            <div class="notice-list" v-loading="activeLoading">
+              <div v-if="activeList.length === 0" class="empty-notice">
+                <el-empty description="暂无活动公告" :image-size="60" />
               </div>
-              <div class="notice-date">{{ formatDate(active.startTime) }}</div>
+              <div v-else class="notice-item" v-for="active in activeList" :key="active.id"
+                @click="showActiveDetail(active)">
+                <div class="notice-title">
+                  <el-tag type="success" size="small" effect="dark" class="notice-tag">活动</el-tag>
+                  <span class="title-text">{{ active.title }}</span>
+                </div>
+                <div class="notice-date">{{ formatDate(active.startTime) }}</div>
+              </div>
             </div>
-          </div>
           </div>
 
         </div>
@@ -400,11 +386,11 @@
         </div>
       </div>
 
-      <!-- 推荐区 -->
+      <!-- 猜你喜欢-推荐区 -->
       <div class="recommendations-section">
 
         <div class="section-title">
-          <h2>图书推荐</h2>
+          <h2>猜你喜欢</h2>
           <router-link v-if="isLoggedIn" to="/all-recommendations" class="view-all">
             查看更多推荐 <el-icon>
               <ArrowRight />
@@ -938,7 +924,6 @@ $transition-slow: all 0.5s ease;
       backdrop-filter: blur(10px);
       border: 1px solid rgba(255, 255, 255, 0.2);
       border-radius: $border-radius;
-      box-shadow: $box-shadow-light;
       transition: $transition-normal;
       padding: 15px;
       display: flex;
@@ -951,9 +936,6 @@ $transition-slow: all 0.5s ease;
       margin-top: 15px;
       background: rgba(255, 255, 255, 0.9);
       backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      border-radius: $border-radius;
-      box-shadow: $box-shadow-light;
       padding: 15px;
       overflow-y: auto;
       overflow-x: hidden;
@@ -1053,10 +1035,6 @@ $transition-slow: all 0.5s ease;
       min-height: 0;
       margin-top: 15px;
       background: rgba(255, 255, 255, 0.9);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      border-radius: $border-radius;
-      box-shadow: $box-shadow-light;
       padding: 15px;
       overflow-y: auto;
       overflow-x: hidden;

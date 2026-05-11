@@ -30,7 +30,7 @@
         <el-icon>
           <Plus />
         </el-icon>
-        <span>添加图书</span>
+        <span>新增图书</span>
       </el-button>
     </div>
 
@@ -70,7 +70,7 @@
           </el-table-column>
           <el-table-column label="操作" width="220" fixed="right">
             <template #default="scope">
-              <el-button link type="primary" size="small" @click="handleEdit(scope.row)">编辑</el-button>
+              <el-button link type="primary" size="small" @click="handleEdit(scope.row)">修改</el-button>
               <el-button link :type="scope.row.status === 1 ? 'warning' : 'success'" size="small"
                 @click="handleToggleStatus(scope.row)">
                 {{ scope.row.status === 1 ? '下架' : '上架' }}
@@ -88,8 +88,8 @@
       </div>
     </div>
 
-    <!-- 添加/编辑图书对话框 -->
-    <el-dialog v-model="dialogVisible" :title="isEdit ? '编辑图书' : '添加图书'" width="60%" destroy-on-close>
+    <!-- 新增/修改图书对话框 -->
+    <el-dialog v-model="dialogVisible" :title="isEdit ? '修改图书' : '新增图书'" width="30%" destroy-on-close>
       <el-form ref="bookFormRef" :model="bookForm" :rules="bookRules" label-width="100px"
         style="max-height: 60vh; overflow-y: auto;">
         <el-form-item label="ISBN" prop="isbn">
@@ -340,7 +340,7 @@ const handleCurrentChange = (val) => {
   fetchBooks();
 };
 
-// 显示添加图书对话框
+// 显示新增图书对话框
 const showAddBookDialog = () => {
   isEdit.value = false;
   Object.keys(bookForm).forEach(key => {
@@ -349,7 +349,7 @@ const showAddBookDialog = () => {
   dialogVisible.value = true;
 };
 
-// 处理编辑图书
+// 处理修改图书
 const handleEdit = (row) => {
   isEdit.value = true;
   Object.keys(bookForm).forEach(key => {
@@ -406,14 +406,14 @@ const submitBookForm = () => {
       submitLoading.value = true;
       try {
         if (isEdit.value) {
-          // 编辑图书
+          // 修改图书
           await request.put(`/book/${bookForm.id}`, bookForm, {
-            successMsg: '编辑成功'
+            successMsg: '修改成功'
           });
         } else {
-          // 添加图书
+          // 新增图书
           await request.post('/book/add', bookForm, {
-            successMsg: '添加成功'
+            successMsg: '新增成功'
           });
         }
         dialogVisible.value = false;

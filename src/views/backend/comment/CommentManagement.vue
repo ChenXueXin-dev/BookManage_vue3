@@ -32,7 +32,7 @@
     </div>
 
     <div class="table-container">
-       <div class="status-tab-container">
+      <div class="status-tab-container">
         <el-tabs v-model="statusTabValue" @tab-change="handleStatusTabChange">
           <el-tab-pane label="全部评论" name="all"></el-tab-pane>
           <el-tab-pane label="主评论" name="main"></el-tab-pane>
@@ -179,7 +179,7 @@ const bookDetailVisible = ref(false)
 const bookDetail = ref(null)
 const bookLoading = ref(false)
 
-// 获取评论列表（优化：添加筛选条件）
+// 获取评论列表（优化：新增筛选条件）
 const fetchCommentList = async () => {
   loading.value = true
   try {
@@ -190,7 +190,7 @@ const fetchCommentList = async () => {
       size: pageSize.value
     }
 
-    // 添加筛选条件
+    // 新增筛选条件
     if (filterParams.isReply !== undefined) {
       params.parentId = filterParams.isReply ? 'exists' : 'not_exists'
     }

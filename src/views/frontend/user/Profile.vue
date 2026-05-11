@@ -316,13 +316,13 @@ const handleUpdateAvatar = async () => {
     await request.put(`/user/profile/${profileForm.id}`, updateData, {
       showDefaultMsg: false,
       onSuccess: (res) => {
-        console.log('头像更新成功，响应:', res);
+        console.log('头像修改成功，响应:', res);
         userStore.setUserInfo({
           ...userStore.userInfo,
           avatar: res
         });
 
-        ElMessage.success("头像更新成功");
+        ElMessage.success("头像修改成功");
       },
       onError: (error) => {
         console.error('更新头像失败(onError):', error);
@@ -357,7 +357,7 @@ const handleUpdateProfile = async () => {
       };
 
       await request.put(`/user/profile/${profileForm.id}`, updateData, {
-        successMsg: "个人信息更新成功",
+        successMsg: "个人信息修改成功",
         onSuccess: () => {
           loadUserInfo();
         }

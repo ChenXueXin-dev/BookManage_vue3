@@ -15,7 +15,7 @@
             </div>
           </div>
 
-          <!-- 右侧：编辑区域 -->
+          <!-- 右侧：修改区域 -->
           <div class="info-section">
             <el-form-item label="用户名" prop="username">
               <el-input v-model="form.username" disabled class="disabled-input" />
@@ -38,7 +38,7 @@
             <el-form-item class="submit-section">
               <div v-if="!isEditing">
                 <el-button class="button" type="primary" @click="handleEdit">
-                  编辑信息
+                  修改信息
                 </el-button>
               </div>
               <div v-else class="action-buttons">
@@ -174,12 +174,12 @@ const fetchUserInfo = async () => {
   }
 }
 
-// 编辑信息
+// 修改信息
 const handleEdit = () => {
   isEditing.value = true
 }
 
-// 取消编辑
+// 取消修改
 const handleCancel = () => {
   isEditing.value = false
   fetchUserInfo() // 重新获取数据，恢复原值
@@ -197,7 +197,7 @@ const handleSave = async () => {
       name: form.name,
       email: form.email,
     }, {
-      successMsg: '个人信息更新成功'
+      successMsg: '个人信息修改成功'
     })
 
     isEditing.value = false

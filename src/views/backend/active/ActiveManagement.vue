@@ -9,22 +9,10 @@
       </template>
 
       <div class="search-bar">
-        <el-date-picker
-          v-model="searchStartTime"
-          type="datetime"
-          placeholder="开始时间"
-          format="YYYY-MM-DD HH:mm:ss"
-          value-format="YYYY-MM-DD HH:mm:ss"
-          style="width: 200px; margin-right: 10px"
-        />
-        <el-date-picker
-          v-model="searchEndTime"
-          type="datetime"
-          placeholder="结束时间"
-          format="YYYY-MM-DD HH:mm:ss"
-          value-format="YYYY-MM-DD HH:mm:ss"
-          style="width: 200px; margin-right: 10px"
-        />
+        <el-date-picker v-model="searchStartTime" type="datetime" placeholder="开始时间" format="YYYY-MM-DD HH:mm:ss"
+          value-format="YYYY-MM-DD HH:mm:ss" style="width: 200px; margin-right: 10px" />
+        <el-date-picker v-model="searchEndTime" type="datetime" placeholder="结束时间" format="YYYY-MM-DD HH:mm:ss"
+          value-format="YYYY-MM-DD HH:mm:ss" style="width: 200px; margin-right: 10px" />
         <el-button type="primary" @click="fetchData">搜索</el-button>
         <el-button @click="resetSearch">重置</el-button>
       </div>
@@ -57,22 +45,15 @@
         </el-table-column>
         <el-table-column label="操作" width="200" v-if="isAdmin">
           <template #default="{ row }">
-            <el-button type="primary" size="small" @click="handleEdit(row)">编辑</el-button>
+            <el-button type="primary" size="small" @click="handleEdit(row)">修改</el-button>
             <el-button type="danger" size="small" @click="handleDelete(row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
 
-      <el-pagination
-        v-model:current-page="currentPage"
-        v-model:page-size="pageSize"
-        :page-sizes="[10, 20, 50, 100]"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="total"
-        @size-change="fetchData"
-        @current-change="fetchData"
-        class="pagination"
-      />
+      <el-pagination v-model:current-page="currentPage" v-model:page-size="pageSize" :page-sizes="[10, 20, 50, 100]"
+        layout="total, sizes, prev, pager, next, jumper" :total="total" @size-change="fetchData"
+        @current-change="fetchData" class="pagination" />
     </el-card>
 
     <el-dialog v-model="dialogVisible" :title="dialogTitle" width="600px">
@@ -84,24 +65,12 @@
           <el-input v-model="form.content" type="textarea" :rows="6" placeholder="请输入内容" />
         </el-form-item>
         <el-form-item label="开始时间" prop="startTime">
-          <el-date-picker
-            v-model="form.startTime"
-            type="datetime"
-            placeholder="选择开始时间"
-            format="YYYY-MM-DD HH:mm:ss"
-            value-format="YYYY-MM-DD HH:mm:ss"
-            style="width: 100%"
-          />
+          <el-date-picker v-model="form.startTime" type="datetime" placeholder="选择开始时间" format="YYYY-MM-DD HH:mm:ss"
+            value-format="YYYY-MM-DD HH:mm:ss" style="width: 100%" />
         </el-form-item>
         <el-form-item label="结束时间" prop="endTime">
-          <el-date-picker
-            v-model="form.endTime"
-            type="datetime"
-            placeholder="选择结束时间"
-            format="YYYY-MM-DD HH:mm:ss"
-            value-format="YYYY-MM-DD HH:mm:ss"
-            style="width: 100%"
-          />
+          <el-date-picker v-model="form.endTime" type="datetime" placeholder="选择结束时间" format="YYYY-MM-DD HH:mm:ss"
+            value-format="YYYY-MM-DD HH:mm:ss" style="width: 100%" />
         </el-form-item>
         <el-form-item label="状态" prop="status">
           <el-radio-group v-model="form.status">
@@ -206,7 +175,7 @@ const handleAdd = () => {
 }
 
 const handleEdit = (row) => {
-  dialogTitle.value = '编辑活动'
+  dialogTitle.value = '修改活动'
   Object.assign(form, {
     id: row.id,
     title: row.title,
@@ -242,10 +211,10 @@ const handleSubmit = async () => {
       try {
         if (form.id) {
           await request.put(`/active/${form.id}`, form)
-          ElMessage.success('更新成功')
+          ElMessage.success('修改成功')
         } else {
           await request.post('/active/add', form)
-          ElMessage.success('添加成功')
+          ElMessage.success('新增成功')
         }
         dialogVisible.value = false
         fetchData()

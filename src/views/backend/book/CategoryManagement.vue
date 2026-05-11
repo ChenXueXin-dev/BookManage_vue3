@@ -1,7 +1,7 @@
 <template>
   <div class="category-management-container">
     <div class="page-header">
-      <el-button type="primary" @click="showAddDialog">添加分类</el-button>
+      <el-button type="primary" @click="showAddDialog">新增分类</el-button>
     </div>
 
     <div class="content-wrapper">
@@ -20,10 +20,10 @@
                 <span>{{ node.label }}</span>
                 <span class="tree-node-actions">
                   <el-button type="primary" link size="small" @click.stop="handleAddChild(data)">
-                    添加子分类
+                    新增子分类
                   </el-button>
                   <el-button type="primary" link size="small" @click.stop="handleEdit(data)">
-                    编辑
+                    修改
                   </el-button>
                   <el-button type="danger" link size="small" @click.stop="handleDelete(node, data)">
                     删除
@@ -41,7 +41,7 @@
             <div class="card-header">
               <span>分类详情</span>
               <el-button type="primary" size="small" @click="handleEdit(currentCategory)">
-                编辑
+                修改
               </el-button>
             </div>
           </template>
@@ -76,8 +76,8 @@
       </div>
     </div>
 
-    <!-- 添加/编辑分类对话框 -->
-    <el-dialog v-model="dialogVisible" :title="isEdit ? '编辑分类' : addAsChild ? '添加子分类' : '添加分类'" width="40%"
+    <!-- 新增/修改分类对话框 -->
+    <el-dialog v-model="dialogVisible" :title="isEdit ? '修改分类' : addAsChild ? '新增子分类' : '新增分类'" width="40%"
       destroy-on-close>
       <el-form ref="categoryFormRef" :model="categoryForm" :rules="categoryRules" label-width="100px">
         <el-form-item label="分类名称" prop="name">
@@ -254,7 +254,7 @@ const handleNodeClick = (data) => {
   currentCategory.value = data;
 };
 
-// 显示添加分类对话框
+// 显示新增分类对话框
 const showAddDialog = () => {
   isEdit.value = false;
   addAsChild.value = false;
@@ -277,9 +277,9 @@ const getCategoryLevel = (categoryId) => {
   return 4; // 四级分类（不应该出现）
 };
 
-// 处理添加子分类
+// 处理新增子分类
 const handleAddChild = (data) => {
-  // 检查分类级别，若已是三级分类则不允许添加子分类
+  // 检查分类级别，若已是三级分类则不允许新增子分类
   const level = getCategoryLevel(data.id);
   if (level >= 3) {
     ElMessage.warning('最多只能创建三级分类');
@@ -293,7 +293,7 @@ const handleAddChild = (data) => {
   dialogVisible.value = true;
 };
 
-// 处理编辑分类
+// 处理修改分类
 const handleEdit = (data) => {
   isEdit.value = true;
   addAsChild.value = false;
@@ -361,14 +361,14 @@ const submitCategoryForm = () => {
       submitLoading.value = true;
       try {
         if (isEdit.value) {
-          // 编辑分类
+          // 修改分类
           await request.put(`/book/category/${categoryForm.id}`, categoryForm, {
-            successMsg: '编辑成功'
+            successMsg: '修改成功'
           });
         } else {
-          // 添加分类
+          // 新增分类
           await request.post('/book/category/add', categoryForm, {
-            successMsg: '添加成功'
+            successMsg: '新增成功'
           });
         }
 

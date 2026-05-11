@@ -1,151 +1,157 @@
 <template>
-  <div class="register-container">
-    <div class="register-wrapper">
-      <div class="form-section">
-        <div class="form-container">
-          <div class="register-header">
-            <h2>欢迎注册</h2>
-            <p>创建账号，探索阅读海洋</p>
-          </div>
-
-          <el-form :model="registerForm" :rules="rules" ref="registerFormRef" class="register-form">
-            <el-form-item prop="username">
-              <div class="input-wrapper">
-                <el-input :prefix-icon="User" v-model="registerForm.username" placeholder="用户名" class="custom-input">
-                </el-input>
-              </div>
-            </el-form-item>
-
-            <el-form-item prop="password">
-              <div class="input-wrapper">
-                <el-input :prefix-icon="Lock" v-model="registerForm.password" type="password" placeholder="密码"
-                  show-password class="custom-input">
-                </el-input>
-              </div>
-            </el-form-item>
-
-            <el-form-item v-if="registerForm.password" prop="confirmPassword">
-              <div class="input-wrapper">
-                <el-input :prefix-icon="Lock" v-model="registerForm.confirmPassword" type="password" placeholder="确认密码"
-                  show-password class="custom-input">
-                </el-input>
-              </div>
-            </el-form-item>
-
-            <el-form-item prop="email">
-              <div class="input-wrapper">
-                <el-input :prefix-icon="Message" v-model="registerForm.email" placeholder="qq邮箱" class="custom-input">
-                </el-input>
-              </div>
-            </el-form-item>
-
-            <div class="terms-agreement">
-              <el-checkbox v-model="agreement">我已阅读并同意</el-checkbox>
-              <a href="#" class="terms-link">用户协议</a>和<a href="#" class="terms-link">隐私政策</a>
-            </div>
-
-            <el-button type="primary" :loading="loading" @click="handleRegister" class="register-button">
-              注册账号
-            </el-button>
-
-            <div class="login-cta">
-              <p>已有账号？</p>
-              <router-link to="/login" class="login-link">立即登录</router-link>
-            </div>
-          </el-form>
+  <div class="forgot-password-container">
+    <div class="forgot-password-wrapper">
+      <!-- <div class="brand-section">
+        <h1 class="brand-title">图书管理系统</h1>
+        <p class="brand-subtitle">找回密码</p>
+        <div class="brand-decoration">
+          <div class="circle circle-1"></div>
+          <div class="circle circle-2"></div>
+          <div class="circle circle-3"></div>
         </div>
+      </div> -->
+
+      <div class="form-section">
+        <div class="form-header">
+          <h2>重置密码</h2>
+          <p>请输入您的注册邮箱，我们将发送验证码</p>
+        </div>
+
+        <el-form ref="formRef" :model="form" :rules="rules" class="forgot-form">
+          <el-form-item prop="email">
+            <el-input v-model="form.email" placeholder="请输入注册邮箱" prefix-icon="Message" size="large" />
+          </el-form-item>
+
+          <el-form-item prop="code">
+            <div class="code-input-wrapper">
+              <el-input v-model="form.code" placeholder="请输入验证码" prefix-icon="Key" size="large" class="code-input" />
+              <el-button type="primary" :disabled="countdown > 0" :loading="sendingCode" @click="handleSendCode"
+                class="send-code-btn">
+                {{ countdown > 0 ? `${countdown}s后重试` : '发送验证码' }}
+              </el-button>
+            </div>
+          </el-form-item>
+
+          <el-form-item prop="newPassword">
+            <el-input v-model="form.newPassword" type="password" placeholder="请输入新密码" prefix-icon="Lock" size="large"
+              show-password />
+          </el-form-item>
+
+          <el-form-item prop="confirmPassword">
+            <el-input v-model="form.confirmPassword" type="password" placeholder="请确认新密码" prefix-icon="Lock"
+              size="large" show-password />
+          </el-form-item>
+
+          <el-form-item>
+            <el-button type="primary" size="large" :loading="loading" @click="handleSubmit" class="submit-btn">
+              重置密码
+            </el-button>
+          </el-form-item>
+
+          <div class="form-footer">
+            <router-link to="/login">返回登录</router-link>
+          </div>
+        </el-form>
       </div>
     </div>
-
-    <footer class="site-footer">
-      <p> Copyright © 2024 - {{ new Date().getFullYear() }} LL All Rights Reserved</p>
-    </footer>
   </div>
 </template>
 
 <script setup>
 import { ref, reactive } from 'vue'
 import { useRouter } from 'vue-router'
-import { User, Lock, Message, Reading } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
 import request from '@/utils/request'
 
 const router = useRouter()
-const registerFormRef = ref(null)
+const formRef = ref(null)
 const loading = ref(false)
-const agreement = ref(false)
+const sendingCode = ref(false)
+const countdown = ref(0)
 
-const registerForm = reactive({
-  username: '',
-  password: '',
-  confirmPassword: '',
+const form = reactive({
   email: '',
-  phone: '',
-  roleType: 'USER', // 默认注册为普通用户
+  code: '',
+  newPassword: '',
+  confirmPassword: ''
 })
 
-const validatePass2 = (rule, value, callback) => {
-  if (value !== registerForm.password) {
-    callback(new Error('两次输入密码不一致!'))
-  } else {
-    callback()
-  }
-}
-
-const validateEmail = (rule, value, callback) => {
-  const emailRegex = /^[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)*@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/
-  if (!emailRegex.test(value)) {
-    callback(new Error('邮箱格式不正确'))
-  } else {
-    callback()
-  }
-}
-
-const validatePhone = (rule, value, callback) => {
-  if (value && !/^1[3-9]\d{9}$/.test(value)) {
-    callback(new Error('手机号格式不正确'))
+const validateConfirmPassword = (rule, value, callback) => {
+  if (value === '') {
+    callback(new Error('请再次输入密码'))
+  } else if (value !== form.newPassword) {
+    callback(new Error('两次输入密码不一致'))
   } else {
     callback()
   }
 }
 
 const rules = {
-  username: [
-    { required: true, message: '请输入用户名', trigger: 'blur' },
-    { min: 3, max: 50, message: '用户名长度必须在3到50个字符之间', trigger: 'blur' }
-  ],
-  password: [
-    { required: true, message: '请输入密码', trigger: 'blur' },
-    { min: 6, max: 100, message: '密码长度必须在6到100个字符之间', trigger: 'blur' }
-  ],
-  confirmPassword: [
-    { required: true, message: '请再次输入密码', trigger: 'blur' },
-    { validator: validatePass2, trigger: 'blur' }
-  ],
   email: [
     { required: true, message: '请输入邮箱', trigger: 'blur' },
-    { validator: validateEmail, trigger: 'blur' }
+    { type: 'email', message: '请输入正确的邮箱格式', trigger: 'blur' }
   ],
+  code: [
+    { required: true, message: '请输入验证码', trigger: 'blur' },
+    { len: 6, message: '验证码为6位数字', trigger: 'blur' }
+  ],
+  newPassword: [
+    { required: true, message: '请输入新密码', trigger: 'blur' },
+    { min: 6, max: 20, message: '密码长度在6到20个字符之间', trigger: 'blur' }
+  ],
+  confirmPassword: [
+    { required: true, validator: validateConfirmPassword, trigger: 'blur' }
+  ]
 }
 
-const handleRegister = () => {
-  if (!agreement.value) {
-    ElMessage.warning('请先阅读并同意用户协议和隐私政策');
-    return;
+const handleSendCode = async () => {
+  if (!form.email) {
+    ElMessage.warning('请先输入邮箱')
+    return
   }
 
-  registerFormRef.value.validate(async valid => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+  if (!emailRegex.test(form.email)) {
+    ElMessage.warning('请输入正确的邮箱格式')
+    return
+  }
+
+  sendingCode.value = true
+  try {
+    await request.post('/user/send-code', { email: form.email }, {
+      successMsg: '验证码已发送',
+      showDefaultMsg: true
+    })
+    countdown.value = 60
+    const timer = setInterval(() => {
+      countdown.value--
+      if (countdown.value <= 0) {
+        clearInterval(timer)
+      }
+    }, 1000)
+  } catch (error) {
+    console.error('发送验证码失败:', error)
+  } finally {
+    sendingCode.value = false
+  }
+}
+
+const handleSubmit = () => {
+  formRef.value.validate(async (valid) => {
     if (valid) {
       loading.value = true
       try {
-        const { confirmPassword, ...registerData } = registerForm
-        await request.post("/user/add", registerData, {
-          successMsg: "注册成功",
-          showDefaultMsg: true,
-          onSuccess: () => {
-            router.push('/login')
-          }
+        await request.post('/user/reset-password', {
+          email: form.email,
+          code: form.code,
+          newPassword: form.newPassword
+        }, {
+          successMsg: '密码重置成功，请登录',
+          showDefaultMsg: true
         })
+        router.push('/login')
+      } catch (error) {
+        console.error('重置密码失败:', error)
       } finally {
         loading.value = false
       }
@@ -157,9 +163,8 @@ const handleRegister = () => {
 <style lang="scss" scoped>
 $primary-color: #4F9DFB;
 $primary-gradient: linear-gradient(135deg, #4F9DFB, #77bafe 40%, #90edc6);
-$background-dark: #CFD8DC;
 
-.register-container {
+.forgot-password-container {
   position: relative;
   min-height: 100vh;
   width: 100%;
@@ -169,15 +174,14 @@ $background-dark: #CFD8DC;
   justify-content: center;
   background: linear-gradient(135deg, #bbd8ff, #d6fff5, #cadfff);
   overflow: hidden;
-  padding: 40px 0;
 }
 
-.register-wrapper {
+.forgot-password-wrapper {
   position: relative;
   z-index: 5;
-  width: 400px;
+  width: 800px;
   max-width: 1200px;
-  min-height: 400px;
+  min-height: 500px;
   display: flex;
   border-radius: 24px;
   overflow: hidden;
@@ -185,225 +189,145 @@ $background-dark: #CFD8DC;
   box-shadow: 0 15px 50px rgba(92, 92, 92, 0.1);
 }
 
-.form-section {
+.brand-section {
   flex: 1;
-  background-color: white;
+  background: linear-gradient(135deg, rgba(100, 181, 246, 0.95) 0%, rgba(94, 114, 228, 0.95) 100%);
+  color: white;
+  padding: 60px 40px;
   display: flex;
-  align-items: center;
+  flex-direction: column;
   justify-content: center;
-  padding: 40px;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
 }
 
-.form-container {
-  width: 100%;
-  max-width: 450px;
-  padding: 0 20px;
-}
-
-.register-header {
+.brand-title {
+  font-size: 28px;
+  font-weight: 700;
   margin-bottom: 10px;
   text-align: center;
+}
+
+.brand-subtitle {
+  font-size: 16px;
+  opacity: 0.9;
+  text-align: center;
+}
+
+.brand-decoration {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+}
+
+.circle {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.circle-1 {
+  width: 200px;
+  height: 200px;
+  top: -50px;
+  right: -50px;
+}
+
+.circle-2 {
+  width: 150px;
+  height: 150px;
+  bottom: -30px;
+  left: -30px;
+}
+
+.circle-3 {
+  width: 100px;
+  height: 100px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.form-section {
+  flex: 1.5;
+  padding: 50px 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.form-header {
+  text-align: center;
+  margin-bottom: 30px;
 
   h2 {
-    font-size: 32px;
-    font-weight: 600;
-    color: #37474f;
-    margin-bottom: 8px;
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 10px;
   }
 
   p {
-    font-size: 16px;
-    color: #78909c;
-    line-height: 1.5;
+    color: #666;
+    font-size: 14px;
   }
 }
 
-.register-form {
-  margin-bottom: 30px;
-}
-
-.input-wrapper {
-  position: relative;
-  display: flex;
-  align-items: center;
-  background-color: #fff !important;
-  padding: 10px;
-  border-radius: 12px;
-  overflow: hidden;
-  transition: all 0.3s;
-  border: 2px solid $background-dark;
-  height: 56px;
-  margin-bottom: 5px;
-
-  &:hover,
-  &:focus-within {
-    background-color: #fff !important;
-    border-color: #64b5f6;
-
-    .el-icon {
-      color: #64b5f6;
-    }
-  }
-}
-
-:deep(.input-wrapper) {
-  width: 100% !important;
-}
-
-:deep(.custom-input) {
-  .el-input__wrapper {
-    box-shadow: none !important;
-    padding: 0;
-    width: 100% !important;
-    background-color: #fff !important;
-  }
-
-  .el-input__inner {
-    height: 52px;
-    font-size: 16px;
-    width: 100% !important;
-    background-color: #fff !important;
-    padding-right: 15px;
-  }
-
-  .el-input__wrapper.is-focus {
-    background-color: #fff !important;
-    box-shadow: none !important;
-  }
-}
-
-.terms-agreement {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  margin: 25px 0;
-  font-size: 14px;
-  color: #546e7a;
-
-  .terms-link {
-    color: $primary-color;
-    margin: 0 4px;
-    text-decoration: none;
-    font-weight: 500;
-
-    &:hover {
-      text-decoration: underline;
-    }
-  }
-}
-
-.register-button {
-  margin-top: 10px;
+.forgot-form {
   width: 100%;
-  height: 56px;
-  border-radius: 12px;
-  font-size: 18px;
-  font-weight: 600;
-  background: $primary-gradient;
-  border: none;
-  transition: all 0.3s;
+}
 
-  &:hover {
-    border: 1px solid #cadfff;
-    transform: translateY(-3px);
-    box-shadow: 0 12px 20px rgba(94, 114, 228, 0.4);
+.code-input-wrapper {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+
+  .code-input {
+    flex: 1;
   }
 
-  &:active {
-    transform: translateY(-1px);
+  .send-code-btn {
+    width: 120px;
   }
 }
 
-.login-cta {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-top: 30px;
+.submit-btn {
+  width: 100%;
+  height: 45px;
+  font-size: 16px;
+  border-radius: 8px;
+}
 
-  p {
-    color: #78909c;
-    margin-right: 10px;
-    font-size: 16px;
-  }
+.form-footer {
+  text-align: center;
+  margin-top: 20px;
 
-  .login-link {
+  a {
     color: $primary-color;
-    font-weight: 600;
-    font-size: 16px;
     text-decoration: none;
-    transition: all 0.3s;
+    font-size: 14px;
 
     &:hover {
-      color: #64b5f6;
       text-decoration: underline;
     }
   }
 }
 
-.site-footer {
-  position: relative;
-  z-index: 5;
-  margin-top: 30px;
-  text-align: center;
-  color: #607d8b;
-  font-size: 14px;
-  padding: 10px 0;
-}
-
-@media (max-width: 992px) {
-  .register-wrapper {
+@media (max-width: 768px) {
+  .forgot-password-wrapper {
+    width: 90%;
     flex-direction: column;
-    min-height: auto;
-    max-width: 600px;
   }
 
-  .brand-content .site-name {
-    font-size: 42px;
-  }
-
-  .form-section {
-    padding: 30px;
-  }
-
-  .form-container {
-    max-width: 100%;
-  }
-}
-
-@media (max-width: 576px) {
-  .register-wrapper {
-    width: 95%;
-    border-radius: 16px;
-  }
-
-  .brand-content {
-    padding: 10px;
-
-    .site-name {
-      font-size: 36px;
-    }
+  .brand-section {
+    padding: 40px 20px;
   }
 
   .form-section {
-    padding: 25px 20px;
-  }
-
-  .register-header h2 {
-    font-size: 28px;
-  }
-
-  .register-button {
-    height: 50px;
-  }
-
-  .form-container {
-    padding: 0;
-  }
-
-  :deep(.custom-input) {
-    .el-input__inner {
-      height: 48px;
-    }
+    padding: 30px 20px;
   }
 }
 </style>

@@ -26,22 +26,15 @@
         </el-table-column>
         <el-table-column label="操作" width="200" v-if="isAdmin">
           <template #default="{ row }">
-            <el-button type="primary" size="small" @click="handleEdit(row)">编辑</el-button>
+            <el-button type="primary" size="small" @click="handleEdit(row)">修改</el-button>
             <el-button type="danger" size="small" @click="handleDelete(row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
 
-      <el-pagination
-        v-model:current-page="currentPage"
-        v-model:page-size="pageSize"
-        :page-sizes="[10, 20, 50, 100]"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="total"
-        @size-change="fetchData"
-        @current-change="fetchData"
-        class="pagination"
-      />
+      <el-pagination v-model:current-page="currentPage" v-model:page-size="pageSize" :page-sizes="[10, 20, 50, 100]"
+        layout="total, sizes, prev, pager, next, jumper" :total="total" @size-change="fetchData"
+        @current-change="fetchData" class="pagination" />
     </el-card>
 
     <el-dialog v-model="dialogVisible" :title="dialogTitle" width="600px">
@@ -134,7 +127,7 @@ const handleAdd = () => {
 }
 
 const handleEdit = (row) => {
-  dialogTitle.value = '编辑通知'
+  dialogTitle.value = '修改通知'
   editId.value = row.id
   form.title = row.title
   form.content = row.content
@@ -163,9 +156,9 @@ const handleSubmit = async () => {
   submitLoading.value = true
   try {
     if (editId.value) {
-      await request.put(`/notice/${editId.value}`, form, { successMsg: '更新成功' })
+      await request.put(`/notice/${editId.value}`, form, { successMsg: '修改成功' })
     } else {
-      await request.post('/notice/add', form, { successMsg: '添加成功' })
+      await request.post('/notice/add', form, { successMsg: '新增成功' })
     }
     dialogVisible.value = false
     fetchData()

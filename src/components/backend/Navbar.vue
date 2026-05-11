@@ -73,7 +73,7 @@ const toggleFullScreen = () => {
   }
 }
 
-// 添加和移除全屏事件监听
+// 新增和移除全屏事件监听
 onMounted(() => {
   document.addEventListener('fullscreenchange', handleFullscreenChange)
 })

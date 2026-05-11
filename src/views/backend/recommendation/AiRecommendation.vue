@@ -11,15 +11,12 @@
       </template>
 
       <div class="search-form">
-        <el-input
-          v-model="searchUsername"
-          placeholder="请输入用户名搜索"
-          style="width: 300px"
-          clearable
-          @keyup.enter="handleSearch"
-        >
+        <el-input v-model="searchUsername" placeholder="请输入用户名搜索" style="width: 300px" clearable
+          @keyup.enter="handleSearch">
           <template #prefix>
-            <el-icon><Search /></el-icon>
+            <el-icon>
+              <Search />
+            </el-icon>
           </template>
         </el-input>
         <el-button type="primary" @click="handleSearch" :loading="searchLoading">
@@ -42,13 +39,8 @@
         <el-table-column label="推荐图书" min-width="300">
           <template #default="{ row }">
             <div class="book-tags">
-              <el-tag
-                v-for="book in row.recommendations"
-                :key="book.bookId"
-                type="primary"
-                effect="plain"
-                style="margin: 2px"
-              >
+              <el-tag v-for="book in row.recommendations" :key="book.bookId" type="primary" effect="plain"
+                style="margin: 2px">
                 《{{ book.title }}》
               </el-tag>
             </div>
@@ -65,7 +57,9 @@
     <el-card class="summary-card" v-if="overallSummary">
       <template #header>
         <div class="card-header">
-          <el-icon class="ai-icon"><Cpu /></el-icon>
+          <el-icon class="ai-icon">
+            <Cpu />
+          </el-icon>
           <span>AI整体分析报告</span>
         </div>
       </template>
@@ -84,11 +78,7 @@
           <el-table-column label="推荐图书" min-width="400">
             <template #default="{ row }">
               <div class="book-list">
-                <div
-                  v-for="(book, index) in row.recommendations"
-                  :key="book.bookId"
-                  class="book-item"
-                >
+                <div v-for="(book, index) in row.recommendations" :key="book.bookId" class="book-item">
                   <span class="book-index">{{ index + 1 }}.</span>
                   <span class="book-title">《{{ book.title }}》</span>
                   <span class="book-author">- {{ book.author }}</span>
@@ -144,11 +134,13 @@ const fetchAllSummary = async () => {
   summaryLoading.value = true
   try {
     const res = await request.get('/ai-recommendation/admin/summary', null, { showDefaultMsg: false })
+    console.log('AI汇总响应:', res)
     allUsers.value = res.users || []
     overallSummary.value = res.overallSummary || ''
     aiEnabled.value = res.aiEnabled || false
   } catch (error) {
-    ElMessage.error('获取汇总失败')
+    console.error('获取汇总失败:', error)
+    ElMessage.error('获取汇总失败: ' + (error.message || '未知错误'))
   } finally {
     summaryLoading.value = false
   }

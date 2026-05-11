@@ -64,7 +64,7 @@ const toggleCollection = async () => {
       })
       isCollected.value = false
     } else {
-      // 添加收藏
+      // 新增收藏
       await request.post('/collection/add', { bookId: props.bookId }, {
         successMsg: '收藏成功'
       })

@@ -29,7 +29,7 @@
         </nav>
         <div class="user-actions">
           <template v-if="isLoggedIn">
-            <!-- 添加借阅提醒图标 -->
+            <!-- 新增借阅提醒图标 -->
             <el-badge :value="allNotifications.length" :hidden="allNotifications.length === 0"
               class="notification-badge">
               <el-popover placement="bottom" :width="320" trigger="click" @show="loadAllNotifications">

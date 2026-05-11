@@ -202,7 +202,7 @@ const fetchCategories = async () => {
     // 获取有图书的分类及其数量
     const categoriesWithBooks = await request.get('/book/category/with-books');
 
-    // 处理分类树，添加图书数量
+    // 处理分类树，新增图书数量
     const processCategories = (categories) => {
       if (!categories || categories.length === 0) return [];
 
@@ -221,7 +221,7 @@ const fetchCategories = async () => {
 
     const processedCategories = processCategories(res);
 
-    // 添加"全部"选项作为根节点
+    // 新增"全部"选项作为根节点
     categoryTree.value = [
       {
         id: null,
@@ -242,7 +242,7 @@ const fetchBooks = async () => {
     const params = {
       ...searchForm,
       status: 1,
-      orderBy: sortOption.value  // 添加排序参数
+      orderBy: sortOption.value  // 新增排序参数
     };
     const res = await request.get('/book/list', params);
     bookList.value = res.records || [];

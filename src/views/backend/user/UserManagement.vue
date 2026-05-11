@@ -59,7 +59,6 @@
           <el-table-column type="selection" width="55" />
           <el-table-column prop="id" label="ID" width="80" />
           <el-table-column prop="username" label="用户名" />
-          <el-table-column prop="name" label="昵称" />
           <el-table-column prop="email" label="邮箱" />
           <el-table-column prop="roleType" label="角色">
             <template #default="scope">
@@ -84,7 +83,7 @@
           <el-table-column label="操作" width="220" fixed="right">
             <template #default="scope">
               <el-button type="primary" size="small" link @click="handleEdit(scope.row)">
-                编辑
+                修改
               </el-button>
               <el-button type="primary" size="small" link @click="handleResetUserPassword(scope.row)">
                 重置密码
@@ -113,9 +112,7 @@
         <el-form-item label="用户名" prop="username">
           <el-input v-model="userForm.username" placeholder="请输入用户名" :disabled="userForm.id !== undefined" />
         </el-form-item>
-        <el-form-item label="昵称" prop="name">
-          <el-input v-model="userForm.name" placeholder="请输入昵称" />
-        </el-form-item>
+
         <el-form-item label="邮箱" prop="email">
           <el-input v-model="userForm.email" placeholder="请输入邮箱" />
         </el-form-item>
@@ -224,7 +221,7 @@ const resetPasswordForm = reactive({
 
 // 对话框标题
 const dialogTitle = computed(() => {
-  return userForm.id ? '编辑用户' : '新增用户';
+  return userForm.id ? '修改用户' : '新增用户';
 });
 
 // 自定义校验规则 - 确认密码
@@ -418,7 +415,7 @@ const resetUserForm = () => {
   }
 };
 
-// 处理编辑用户
+// 处理修改用户
 const handleEdit = (row) => {
   userForm.id = row.id;
   userForm.username = row.username;
